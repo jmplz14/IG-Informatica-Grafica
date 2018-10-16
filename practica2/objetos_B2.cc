@@ -262,6 +262,99 @@ if (fabs(perfil[0].x)>0.0)
 }
 
 //*************************************************************************
+// clase esfera
+//*************************************************************************
+
+_esfera::_esfera(float radio, float puntos, int lados)
+{
+	_vertex3f vertice_aux;
+	_vertex3i cara_aux;
+	int i;
+	/*vertice_aux.x=-radio;vertice_aux.y=0;vertice_aux.z=0;
+	vertices.push_back(vertice_aux);*/
+
+	//se empieza desde el punto (r,0) y va aumentadon haca las x positivas
+	vertice_aux.z = 0;
+	for (i=puntos/4 + 1;i<(puntos/4+puntos/2);i++){
+		vertice_aux.x =radio*cos(2.0*M_PI*i/puntos);
+		vertice_aux.y =radio*sin(2.0*M_PI*i/puntos);
+		vertices.push_back(vertice_aux);
+	}
+	parametros(vertices,lados);
+	vertice_aux.x =radio*cos(2.0*M_PI*(puntos/4)/puntos);
+	vertice_aux.y =radio*sin(2.0*M_PI*(puntos/4)/puntos);
+	vertices.push_back(vertice_aux);
+
+	vertice_aux.x =radio*cos(2.0*M_PI*(puntos/4+puntos/2)/puntos);
+	vertice_aux.y =radio*sin(2.0*M_PI*(puntos/4+puntos/2)/puntos);
+	vertices.push_back(vertice_aux);
+	/*
+	cara_aux._0 = lados;
+	for(i = 0; i < lados; i++){/*
+		cara_aux._1 = i;
+		cara_aux._2 = (i + 1)%lados;
+		caras.push_back(cara_aux);
+	}
+
+	cara_aux._0 = lados + 1;
+	for(i = 0; i < lados; i++){
+		cara_aux._1 = i;
+		cara_aux._2 = (i + 1)%lados;
+		caras.push_back(cara_aux);
+	}*/
+}
+
+void _esfera::parametros(vector<_vertex3f> perfil, int num)
+{
+int i,j;
+_vertex3f vertice_aux;
+_vertex3i cara_aux;
+int num_aux;
+
+// tratamiento de los vértice
+
+num_aux=perfil.size();
+vertices.resize(num_aux*num);
+for (j=0;j<num;j++)
+  {for (i=0;i<num_aux;i++)
+     {
+      vertice_aux.x=perfil[i].x*cos(2.0*M_PI*j/(1.0*num))+
+                    perfil[i].z*sin(2.0*M_PI*j/(1.0*num));
+      vertice_aux.z=-perfil[i].x*sin(2.0*M_PI*j/(1.0*num))+
+                    perfil[i].z*cos(2.0*M_PI*j/(1.0*num));
+      vertice_aux.y=perfil[i].y;
+      vertices[i+j*num_aux]=vertice_aux;
+     }
+  }
+
+// tratamiento de las caras
+
+for (j=0;j<num;j++)
+  {for (i=0;i<num_aux-1;i++)
+     {cara_aux._0=i+((j+1)%num)*num_aux;
+      cara_aux._1=i+1+((j+1)%num)*num_aux;
+      cara_aux._2=i+1+j*num_aux;
+      caras.push_back(cara_aux);
+
+      cara_aux._0=i+1+j*num_aux;
+      cara_aux._1=i+j*num_aux;
+      cara_aux._2=i+((j+1)%num)*num_aux;
+      caras.push_back(cara_aux);
+     }
+  }
+
+ // tapa inferior
+if (fabs(perfil[0].x)>0.0)
+  {
+  }
+
+ // tapa superior
+ if (fabs(perfil[num_aux-1].x)>0.0)
+  {
+  }
+}
+
+//*************************************************************************
 // clase cilindro
 //*************************************************************************
 
