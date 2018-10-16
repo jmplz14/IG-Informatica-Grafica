@@ -12,7 +12,7 @@
 using namespace std;
 
 // tipos
-typedef enum{CUBO, PIRAMIDE, OBJETO_PLY, ROTACION, CONO} _tipo_objeto;
+typedef enum{CUBO, PIRAMIDE, OBJETO_PLY, ROTACION, CONO, CILINDRO} _tipo_objeto;
 _tipo_objeto t_objeto=CUBO;
 _modo   modo=POINTS;
 
@@ -32,6 +32,7 @@ int Window_x=50,Window_y=50,Window_width=450,Window_high=450;
 _cubo cubo;
 _piramide piramide(0.85,1.3);
 _cono cono(0.85,1.3,10);
+_cilindro cilindro(0.85,1.3,10);
 _objeto_ply  ply;
 _rotacion rotacion;
 
@@ -115,6 +116,7 @@ void draw_objects()
 switch (t_objeto){
 	case CUBO: cubo.draw(modo,1.0,0.0,0.0,0.0,1.0,0.0,2);break;
 	case CONO: cono.draw(modo,1.0,0.0,0.0,0.0,1.0,0.0,2);break;
+	case CILINDRO: cilindro.draw(modo,1.0,0.0,0.0,0.0,1.0,0.0,2);break;
 	case PIRAMIDE: piramide.draw(modo,1.0,0.0,0.0,0.0,1.0,0.0,2);break;
         case OBJETO_PLY: ply.draw(modo,1.0,0.6,0.0,0.0,1.0,0.3,2);break;
         case ROTACION: rotacion.draw(modo,1.0,0.0,0.0,0.0,1.0,0.0,2);break;
@@ -177,6 +179,7 @@ switch (toupper(Tecla1)){
 	case 'S':modo=SOLID;break;
 	case 'A':modo=SOLID_CHESS;break;
 	case '3':t_objeto=CONO;break;
+	case '4':t_objeto=CILINDRO;break;
         case 'P':t_objeto=PIRAMIDE;break;
         case 'C':t_objeto=CUBO;break;
         case 'O':t_objeto=OBJETO_PLY;break;

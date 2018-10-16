@@ -58,6 +58,19 @@ public:
 // clase cono
 //*************************************************************************
 
+class _cilindro: public _triangulos3D
+{
+private:
+  void parametros(vector<_vertex3f> perfil1, int num1);
+public:
+
+	_cilindro(float radio=0.5, float al=1,int lados = 10);
+};
+
+//*************************************************************************
+// clase cono
+//*************************************************************************
+
 class _cono: public _triangulos3D
 {
 private:

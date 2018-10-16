@@ -262,6 +262,92 @@ if (fabs(perfil[0].x)>0.0)
 }
 
 //*************************************************************************
+// clase cilindro
+//*************************************************************************
+
+_cilindro::_cilindro(float radio, float al, int lados)
+{
+	_vertex3f vertice_aux;
+	_vertex3i cara_aux;
+	vertice_aux.x=-radio;vertice_aux.y=0;vertice_aux.z=0;
+	vertices.push_back(vertice_aux);
+	vertice_aux.x=-radio;vertice_aux.y=al;vertice_aux.z=0;
+	vertices.push_back(vertice_aux);
+	parametros(vertices,lados);
+
+	vertice_aux.x=0;vertice_aux.y=0;vertice_aux.z=0;
+	vertices.push_back(vertice_aux);
+
+	vertice_aux.x=0;vertice_aux.y=al;vertice_aux.z=0;
+	vertices.push_back(vertice_aux);
+
+	int i;
+	cara_aux._0 = lados * 2 ;
+	for(i = 0; i < lados * 2; i= i + 2){
+		cara_aux._1 = i;
+		cara_aux._2 = (i + 2)%(lados * 2);
+		caras.push_back(cara_aux);
+	}
+
+	cara_aux._0 = lados * 2 + 1;
+	for(i = 1; i < lados * 2; i= i + 2){
+		cara_aux._1 = i;
+		cara_aux._2 = (i + 2)%(lados * 2);
+		caras.push_back(cara_aux);
+	}
+}
+
+void _cilindro::parametros(vector<_vertex3f> perfil, int num)
+{
+int i,j;
+_vertex3f vertice_aux;
+_vertex3i cara_aux;
+int num_aux;
+
+// tratamiento de los vértice
+
+num_aux=perfil.size();
+vertices.resize(num_aux*num);
+for (j=0;j<num;j++)
+  {for (i=0;i<num_aux;i++)
+     {
+      vertice_aux.x=perfil[i].x*cos(2.0*M_PI*j/(1.0*num))+
+                    perfil[i].z*sin(2.0*M_PI*j/(1.0*num));
+      vertice_aux.z=-perfil[i].x*sin(2.0*M_PI*j/(1.0*num))+
+                    perfil[i].z*cos(2.0*M_PI*j/(1.0*num));
+      vertice_aux.y=perfil[i].y;
+      vertices[i+j*num_aux]=vertice_aux;
+     }
+  }
+
+// tratamiento de las caras
+
+for (j=0;j<num;j++)
+  {for (i=0;i<num_aux-1;i++)
+     {cara_aux._0=i+((j+1)%num)*num_aux;
+      cara_aux._1=i+1+((j+1)%num)*num_aux;
+      cara_aux._2=i+1+j*num_aux;
+      caras.push_back(cara_aux);
+
+      cara_aux._0=i+1+j*num_aux;
+      cara_aux._1=i+j*num_aux;
+      cara_aux._2=i+((j+1)%num)*num_aux;
+      caras.push_back(cara_aux);
+     }
+  }
+
+ // tapa inferior
+if (fabs(perfil[0].x)>0.0)
+  {
+  }
+
+ // tapa superior
+ if (fabs(perfil[num_aux-1].x)>0.0)
+  {
+  }
+}
+
+//*************************************************************************
 // clase objeto ply
 //*************************************************************************
 
