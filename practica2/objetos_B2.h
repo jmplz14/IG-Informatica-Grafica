@@ -90,7 +90,7 @@ private:
   void parametros(vector<_vertex3f> perfil1, int num1);
 public:
 
-	_esfera(float radio=0.5, float puntos=40,int lados = 20);
+	_esfera(float radio=0.5, int puntos=40,int lados = 20);
 };
 
 //*************************************************************************

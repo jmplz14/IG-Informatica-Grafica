@@ -265,7 +265,7 @@ if (fabs(perfil[0].x)>0.0)
 // clase esfera
 //*************************************************************************
 
-_esfera::_esfera(float radio, float puntos, int lados)
+_esfera::_esfera(float radio, int puntos, int lados)
 {
 	_vertex3f vertice_aux;
 	_vertex3i cara_aux;
@@ -288,20 +288,30 @@ _esfera::_esfera(float radio, float puntos, int lados)
 	vertice_aux.x =radio*cos(2.0*M_PI*(puntos/4+puntos/2)/puntos);
 	vertice_aux.y =radio*sin(2.0*M_PI*(puntos/4+puntos/2)/puntos);
 	vertices.push_back(vertice_aux);
-	/*
-	cara_aux._0 = lados;
-	for(i = 0; i < lados; i++){/*
-		cara_aux._1 = i;
-		cara_aux._2 = (i + 1)%lados;
+
+	int puntos_laterales = (puntos/2)-1;
+	cara_aux._0 = vertices.size()-2;
+	cara_aux._1 = 0;
+	cara_aux._2 = puntos_laterales;
+	caras.push_back(cara_aux);
+	for(i = 1; i < lados; i++){
+		cara_aux._1 = cara_aux._2;
+		cara_aux._2 = (cara_aux._2+puntos_laterales)%(vertices.size()-2);
+		cout << cara_aux._1<<":"<<cara_aux._2<<endl;
 		caras.push_back(cara_aux);
 	}
 
-	cara_aux._0 = lados + 1;
-	for(i = 0; i < lados; i++){
-		cara_aux._1 = i;
-		cara_aux._2 = (i + 1)%lados;
+	cara_aux._0 = vertices.size()-1;
+	cara_aux._1 = puntos_laterales-1;
+	cara_aux._2 = cara_aux._1 + puntos_laterales;
+	caras.push_back(cara_aux);
+	for(i = 1; i < lados; i++){
+		cara_aux._1 = cara_aux._2;
+		cara_aux._2 = (cara_aux._2+puntos_laterales)%(vertices.size()-2);
+		cout << cara_aux._1<<":"<<cara_aux._2<<endl;
 		caras.push_back(cara_aux);
-	}*/
+	}
+
 }
 
 void _esfera::parametros(vector<_vertex3f> perfil, int num)
