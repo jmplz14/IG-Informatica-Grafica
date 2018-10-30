@@ -21,7 +21,7 @@ class _puntos3D
 {
 public:
 
-  
+
 	_puntos3D();
 void 	draw_puntos(float r, float g, float b, int grosor);
 
@@ -91,7 +91,7 @@ public:
        _rotacion();
 void  parametros(vector<_vertex3f> perfil1, int num1, int tapas);
 
-vector<_vertex3f> perfil; 
+vector<_vertex3f> perfil;
 int num;
 };
 
@@ -160,4 +160,3 @@ _chasis  chasis;
 _torreta  torreta;
 _tubo     tubo;
 };
-

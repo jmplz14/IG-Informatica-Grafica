@@ -25,7 +25,7 @@ glColor3f(r,g,b);
 
 glEnableClientState(GL_VERTEX_ARRAY);
 glVertexPointer(3,GL_FLOAT,0,&vertices[0]);
-glDrawArrays(GL_POINTS,0,vertices.size()); 
+glDrawArrays(GL_POINTS,0,vertices.size());
 
 /*int i;
 glPointSize(grosor);
@@ -157,7 +157,7 @@ caras[7]._0=0;caras[7]._1=3;caras[7]._2=7;
 caras[8]._0=3;caras[8]._1=2;caras[8]._2=7;
 caras[9]._0=2;caras[9]._1=6;caras[9]._2=7;
 caras[10]._0=0;caras[10]._1=1;caras[10]._2=4;
-caras[11]._0=1;caras[11]._1=5;caras[11]._2=4;  
+caras[11]._0=1;caras[11]._1=5;caras[11]._2=4;
 }
 
 
@@ -168,8 +168,8 @@ caras[11]._0=1;caras[11]._1=5;caras[11]._2=4;
 _piramide::_piramide(float tam, float al)
 {
 
-//vertices 
-vertices.resize(5); 
+//vertices
+vertices.resize(5);
 vertices[0].x=-tam;vertices[0].y=0;vertices[0].z=tam;
 vertices[1].x=tam;vertices[1].y=0;vertices[1].z=tam;
 vertices[2].x=tam;vertices[2].y=0;vertices[2].z=-tam;
@@ -190,10 +190,10 @@ caras[5]._0=3;caras[5]._1=2;caras[5]._2=1;
 //*************************************************************************
 
 
-_objeto_ply::_objeto_ply() 
+_objeto_ply::_objeto_ply()
 {
    // leer lista de coordenadas de vértices y lista de indices de vértices
- 
+
 }
 
 
@@ -204,7 +204,7 @@ int n_ver,n_car;
 
 vector<float> ver_ply ;
 vector<int>   car_ply ;
-   
+
 _file_ply::read(archivo, ver_ply, car_ply );
 
 n_ver=ver_ply.size()/3;
@@ -274,7 +274,7 @@ for (j=0;j<num;j++)
      }
   }
 
-// tratamiento de las caras 
+// tratamiento de las caras
 
 for (j=0;j<num;j++)
   {for (i=0;i<num_aux-1;i++)
@@ -282,19 +282,19 @@ for (j=0;j<num;j++)
       cara_aux._1=i+1+((j+1)%num)*num_aux;
       cara_aux._2=i+1+j*num_aux;
       caras.push_back(cara_aux);
-      
+
       cara_aux._0=i+1+j*num_aux;
       cara_aux._1=i+j*num_aux;
       cara_aux._2=i+((j+1)%num)*num_aux;
       caras.push_back(cara_aux);
      }
   }
-     
+
  // tapa inferior
 if (fabs(perfil[0].x)>0.0 && tapa==1)
   {
   }
- 
+
  // tapa superior
  if (fabs(perfil[num_aux-1].x)>0.0 && tapa==1)
   {
