@@ -571,6 +571,8 @@ _grua::_grua():base(1),cabeza_giratoria(), brazo_inferior(0.5,1,10){
 	giro_base = 0;
 	giro_brazo_inferior = 43;
 	giro_brazo_superior = 70;
+	rotar_brazo_superior = 0;
+	mover_mano = -90;
 }
 void _grua::draw(_modo modo, float r1, float g1, float b1, float r2, float g2, float b2, float grosor)
 {
@@ -605,7 +607,7 @@ glPushMatrix();
 		glTranslatef(0,1,0);
 		glRotatef(giro_base,0,1,0);
 		glRotatef(giro_brazo_superior,1,0,0);
-
+		glRotatef(rotar_brazo_superior,0,1,0);
 		glPushMatrix();
 			glScalef(0.5,1,0.5);
 			brazo_inferior.draw(modo, r1, g1, b1, r2, g2, b2, grosor);
@@ -614,8 +616,9 @@ glPushMatrix();
 
 		//base de arriba
 		glPushMatrix();
-			glTranslatef(-0.5,1,0.2);
-			glScalef(1,0.1,0.25);
+			glTranslatef(-0.5,1,0);
+			glRotatef(mover_mano,1,0,0);
+			glScalef(1,0.1,0.5);
 			base.draw(modo, r1, g1, b1, r2, g2, b2, grosor);
 		glPopMatrix();
 	glPopMatrix();

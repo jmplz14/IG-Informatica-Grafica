@@ -144,4 +144,6 @@ public:
 	float giro_base;
 	float giro_brazo_inferior;
 	float giro_brazo_superior;
+	float rotar_brazo_superior;
+	float mover_mano;
 };

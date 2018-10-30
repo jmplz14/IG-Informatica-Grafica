@@ -216,26 +216,23 @@ switch (Tecla1){
 	case GLUT_KEY_DOWN:Observer_angle_x++;break;
 	case GLUT_KEY_PAGE_UP:Observer_distance*=1.2;break;
 	case GLUT_KEY_PAGE_DOWN:Observer_distance/=1.2;break;
-	case GLUT_KEY_F1:grua.giro_base+=1;
-									 //if (tanque.giro_tubo>tanque.giro_tubo_max) tanque.giro_tubo=tanque.giro_tubo_max;
-									 break;
- case GLUT_KEY_F2:grua.giro_base-=1;
- 									 //if (tanque.giro_tubo>tanque.giro_tubo_max) tanque.giro_tubo=tanque.giro_tubo_max;
- 									 break;
- case GLUT_KEY_F3:grua.giro_brazo_inferior+=1;
- 									 //if (tanque.giro_tubo>tanque.giro_tubo_max) tanque.giro_tubo=tanque.giro_tubo_max;
- 									 break;
- case GLUT_KEY_F4:grua.giro_brazo_inferior-=1;
-									 //if (tanque.giro_tubo>tanque.giro_tubo_max) tanque.giro_tubo=tanque.giro_tubo_max;
+	case GLUT_KEY_F1:grua.giro_base+=1;break;
+ case GLUT_KEY_F2:grua.giro_base-=1;break;
+ case GLUT_KEY_F3:grua.giro_brazo_inferior+=1;break;
+ case GLUT_KEY_F4:grua.giro_brazo_inferior-=1;break;
+ case GLUT_KEY_F5:grua.giro_brazo_superior+=1; break;
+ case GLUT_KEY_F6:grua.giro_brazo_superior-=1;break;
+ case GLUT_KEY_F7:grua.rotar_brazo_superior+=1;break;
+ case GLUT_KEY_F8:grua.rotar_brazo_superior-=1;
 									break;
- case GLUT_KEY_F5:grua.giro_brazo_superior+=1;
-								   //if (tanque.giro_tubo>tanque.giro_tubo_max) tanque.giro_tubo=tanque.giro_tubo_max;
-								   break;
- case GLUT_KEY_F6:grua.giro_brazo_superior-=1;
-									 //if (tanque.giro_tubo>tanque.giro_tubo_max) tanque.giro_tubo=tanque.giro_tubo_max;
-									 break;
+ case GLUT_KEY_F9:grua.mover_mano+=1;
+								 	//if (tanque.giro_tubo>tanque.giro_tubo_max) tanque.giro_tubo=tanque.giro_tubo_max
+									break;
+ case GLUT_KEY_F10:grua.mover_mano-=1;
+								 	//if (tanque.giro_tubo>tanque.giro_tubo_max) tanque.giro_tubo=tanque.giro_tubo_ma
+								 	break;
 	}
-	cout << "Brazo inferior " << grua.giro_brazo_superior;
+
 glutPostRedisplay();
 }
 
