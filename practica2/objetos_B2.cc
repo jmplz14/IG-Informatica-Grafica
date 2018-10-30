@@ -281,10 +281,11 @@ _esfera::_esfera(float radio, int puntos, int lados)
 		vertices.push_back(vertice_aux);
 	}
 	parametros(vertices,lados);
+	//x = 0 e y = radio
 	vertice_aux.x =radio*cos(2.0*M_PI*(puntos/4)/puntos);
 	vertice_aux.y =radio*sin(2.0*M_PI*(puntos/4)/puntos);
 	vertices.push_back(vertice_aux);
-
+	//x = 0 e y = -radio
 	vertice_aux.x =radio*cos(2.0*M_PI*(puntos/4+puntos/2)/puntos);
 	vertice_aux.y =radio*sin(2.0*M_PI*(puntos/4+puntos/2)/puntos);
 	vertices.push_back(vertice_aux);

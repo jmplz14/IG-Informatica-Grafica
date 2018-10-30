@@ -1,18 +1,18 @@
 //**************************************************************************
-// Práctica 1 usando objetos
+// Práctica 3 usando objetos
 //**************************************************************************
 
 #include <GL/glut.h>
 #include <ctype.h>
 #include <math.h>
 #include <vector>
-#include "objetos_B2.h"
+#include "objetos_B3.h"
 
 
 using namespace std;
 
 // tipos
-typedef enum{CUBO, PIRAMIDE, OBJETO_PLY, ROTACION, CONO, CILINDRO, ESFERA} _tipo_objeto;
+typedef enum{CUBO, PIRAMIDE, OBJETO_PLY, ROTACION, ARTICULADO} _tipo_objeto;
 _tipo_objeto t_objeto=CUBO;
 _modo   modo=POINTS;
 
@@ -31,11 +31,9 @@ int Window_x=50,Window_y=50,Window_width=450,Window_high=450;
 // objetos
 _cubo cubo;
 _piramide piramide(0.85,1.3);
-_cono cono(0.85,1.3,20);
-_cilindro cilindro(0.85,1.3,20);
-_esfera esfera(0.85,12,6);
-_objeto_ply  ply;
-_rotacion rotacion;
+_objeto_ply  ply; 
+_rotacion rotacion; 
+_tanque tanque;
 
 // _objeto_ply *ply1;
 
@@ -87,7 +85,7 @@ glRotatef(Observer_angle_y,0,1,0);
 
 void draw_axis()
 {
-
+	
 glDisable(GL_LIGHTING);
 glLineWidth(2);
 glBegin(GL_LINES);
@@ -116,12 +114,10 @@ void draw_objects()
 
 switch (t_objeto){
 	case CUBO: cubo.draw(modo,1.0,0.0,0.0,0.0,1.0,0.0,2);break;
-	case CONO: cono.draw(modo,1.0,0.0,0.0,0.0,1.0,0.0,2);break;
-	case CILINDRO: cilindro.draw(modo,1.0,0.0,0.0,0.0,1.0,0.0,2);break;
-	case ESFERA: esfera.draw(modo,1.0,0.0,0.0,0.0,1.0,0.0,2);break;
 	case PIRAMIDE: piramide.draw(modo,1.0,0.0,0.0,0.0,1.0,0.0,2);break;
         case OBJETO_PLY: ply.draw(modo,1.0,0.6,0.0,0.0,1.0,0.3,2);break;
         case ROTACION: rotacion.draw(modo,1.0,0.0,0.0,0.0,1.0,0.0,2);break;
+        case ARTICULADO: tanque.draw(modo,0.5,0.7,0.2,0.3,0.6,0.3,2);break;
 	}
 
 }
@@ -178,15 +174,13 @@ switch (toupper(Tecla1)){
 	case 'Q':exit(0);
 	case '1':modo=POINTS;break;
 	case '2':modo=EDGES;break;
-	case 'S':modo=SOLID;break;
-	case 'A':modo=SOLID_CHESS;break;
-	case '3':t_objeto=CONO;break;
-	case '4':t_objeto=CILINDRO;break;
-	case '5':t_objeto=ESFERA;break;
+	case '3':modo=SOLID;break;
+	case '4':modo=SOLID_CHESS;break;
         case 'P':t_objeto=PIRAMIDE;break;
         case 'C':t_objeto=CUBO;break;
-        case 'O':t_objeto=OBJETO_PLY;break;
+        case 'O':t_objeto=OBJETO_PLY;break;	
         case 'R':t_objeto=ROTACION;break;
+        case 'A':t_objeto=ARTICULADO;break;
 	}
 glutPostRedisplay();
 }
@@ -211,6 +205,14 @@ switch (Tecla1){
 	case GLUT_KEY_DOWN:Observer_angle_x++;break;
 	case GLUT_KEY_PAGE_UP:Observer_distance*=1.2;break;
 	case GLUT_KEY_PAGE_DOWN:Observer_distance/=1.2;break;
+        case GLUT_KEY_F1:tanque.giro_tubo+=1;
+                         if (tanque.giro_tubo>tanque.giro_tubo_max) tanque.giro_tubo=tanque.giro_tubo_max;
+                         break;
+        case GLUT_KEY_F2:tanque.giro_tubo-=1;
+                         if (tanque.giro_tubo<tanque.giro_tubo_min) tanque.giro_tubo=tanque.giro_tubo_min;
+                         break;break;
+        case GLUT_KEY_F3:tanque.giro_torreta+=5;break;
+        case GLUT_KEY_F4:tanque.giro_torreta-=5;break;
 	}
 glutPostRedisplay();
 }
@@ -257,25 +259,20 @@ glViewport(0,0,Window_width,Window_high);
 //***************************************************************************
 
 
-int main(int argc, char *argv[] )
+int main(int argc, char **argv)
 {
+ 
+
+// creación del objeto ply
+
+ply.parametros(argv[1]);
 
 
-
-
-// perfil
+// perfil 
 
 vector<_vertex3f> perfil2;
 _vertex3f aux;
-
-aux.x=1.0; aux.y=-1.0; aux.z=0.0;
-perfil2.push_back(aux);
-aux.x=1.0; aux.y=1.0; aux.z=0.0;
-perfil2.push_back(aux);
-
-
-rotacion.parametros(perfil2,6);
-/*aux.x=1.0;aux.y=-1.4;aux.z=0.0;
+aux.x=1.0;aux.y=-1.4;aux.z=0.0;
 perfil2.push_back(aux);
 aux.x=1.0;aux.y=-1.1;aux.z=0.0;
 perfil2.push_back(aux);
@@ -297,7 +294,7 @@ aux.x=0.5;aux.y=1.2;aux.z=0.0;
 perfil2.push_back(aux);
 aux.x=0.3;aux.y=1.4;aux.z=0.0;
 perfil2.push_back(aux);
-*/
+rotacion.parametros(perfil2,6,1);
 
 
 // se llama a la inicialización de glut
@@ -335,11 +332,6 @@ glutSpecialFunc(special_key);
 
 // funcion de inicialización
 initialize();
-
-// creación del objeto ply
-ply.parametros(argv[1]);
-
-//ply1 = new _objeto_ply(argv[1]);
 
 // inicio del bucle de eventos
 glutMainLoop();
