@@ -587,7 +587,7 @@ glPushMatrix();
 glScalef(0.5,0.25,0.5);
 glTranslatef(1,2,1);
 glRotatef(180.0,1,0,0);
-glRotatef(giro_base * -1,0,1,0);
+//glRotatef(giro_base * -1,0,1,0);
 cabeza_giratoria.draw(modo, r1, g1, b1, r2, g2, b2, grosor);
 glPopMatrix();
 
@@ -605,7 +605,7 @@ glPushMatrix();
 	//brazosuperior
 	glPushMatrix();
 		glTranslatef(0,1,0);
-		glRotatef(giro_base,0,1,0);
+		//glRotatef(giro_base,0,1,0);
 		glRotatef(giro_brazo_superior,1,0,0);
 		glRotatef(rotar_brazo_superior,0,1,0);
 		glPushMatrix();
