@@ -569,6 +569,7 @@ if (fabs(perfil[0].x)>0.0)
 
 _grua::_grua():base(1),cabeza_giratoria(), brazo_inferior(0.5,1,10){
 	giro_base = 0;
+	girar_suelo = 0;
 	giro_brazo_inferior = 43;
 	giro_brazo_superior = 70;
 	rotar_brazo_superior = 0;
@@ -577,55 +578,58 @@ _grua::_grua():base(1),cabeza_giratoria(), brazo_inferior(0.5,1,10){
 void _grua::draw(_modo modo, float r1, float g1, float b1, float r2, float g2, float b2, float grosor)
 {
 glPushMatrix();
-//x-y-x
-glScalef(1,0.25,1);
-base.draw(modo, r1, g1, b1, r2, g2, b2, grosor);
-glPopMatrix();
-
-//base
-glPushMatrix();
-glScalef(0.5,0.25,0.5);
-glTranslatef(1,2,1);
-glRotatef(180.0,1,0,0);
-//glRotatef(giro_base * -1,0,1,0);
-cabeza_giratoria.draw(modo, r1, g1, b1, r2, g2, b2, grosor);
-glPopMatrix();
-
-glPushMatrix();
-	//brazoInferior
-	glTranslatef(0.5,0.5,0.5);
-	glRotatef(giro_base,0,1,0);
-	glRotatef(giro_brazo_inferior,1,0,0);
+	//glTranslatef(-0.5,0,-0.5);
+	glRotatef(girar_suelo,0,0.5,0);
 	glPushMatrix();
-		glScalef(0.5,1,0.5);
-		brazo_inferior.draw(modo, r1, g1, b1, r2, g2, b2, grosor);
-
+		//x-y-x
+		glScalef(1,0.25,1);
+		base.draw(modo, r1, g1, b1, r2, g2, b2, grosor);
 	glPopMatrix();
 
-	//brazosuperior
+	//base
 	glPushMatrix();
-		glTranslatef(0,1,0);
-		//glRotatef(giro_base,0,1,0);
-		glRotatef(giro_brazo_superior,1,0,0);
-		glRotatef(rotar_brazo_superior,0,1,0);
+		glScalef(0.5,0.25,0.5);
+		glTranslatef(1,2,1);
+		glRotatef(180.0,1,0,0);
+		glRotatef(giro_base * -1,0,1,0);
+		cabeza_giratoria.draw(modo, r1, g1, b1, r2, g2, b2, grosor);
+	glPopMatrix();
+
+	glPushMatrix();
+		//brazoInferior
+		glTranslatef(0.5,0.5,0.5);
+		glRotatef(giro_base,0,1,0);
+		glRotatef(giro_brazo_inferior,1,0,0);
 		glPushMatrix();
 			glScalef(0.5,1,0.5);
 			brazo_inferior.draw(modo, r1, g1, b1, r2, g2, b2, grosor);
+
 		glPopMatrix();
 
-
-		//base de arriba
+		//brazosuperior
 		glPushMatrix();
-			glTranslatef(-0.5,1,0);
-			glRotatef(mover_mano,1,0,0);
-			glScalef(1,0.1,0.5);
-			base.draw(modo, r1, g1, b1, r2, g2, b2, grosor);
+			glTranslatef(0,1,0);
+			//glRotatef(giro_base,0,1,0);
+			glRotatef(giro_brazo_superior,1,0,0);
+			glRotatef(rotar_brazo_superior,0,1,0);
+			glPushMatrix();
+				glScalef(0.5,1,0.5);
+				brazo_inferior.draw(modo, r1, g1, b1, r2, g2, b2, grosor);
+			glPopMatrix();
+
+
+			//base de arriba
+			glPushMatrix();
+				glTranslatef(-0.5,1,0);
+				glRotatef(mover_mano,1,0,0);
+				glScalef(1,0.1,0.5);
+				base.draw(modo, r1, g1, b1, r2, g2, b2, grosor);
+			glPopMatrix();
 		glPopMatrix();
+
+
+
 	glPopMatrix();
-
-
-
 glPopMatrix();
-
 
 };

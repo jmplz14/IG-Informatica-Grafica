@@ -231,6 +231,12 @@ switch (Tecla1){
  case GLUT_KEY_F10:grua.mover_mano-=1;
 								 	//if (tanque.giro_tubo>tanque.giro_tubo_max) tanque.giro_tubo=tanque.giro_tubo_ma
 								 	break;
+	case GLUT_KEY_F11:grua.girar_suelo+=1;
+								 	//if (tanque.giro_tubo>tanque.giro_tubo_max) tanque.giro_tubo=tanque.giro_tubo_ma
+								 	break;
+	case GLUT_KEY_F12:grua.girar_suelo-=1;
+								 	//if (tanque.giro_tubo>tanque.giro_tubo_max) tanque.giro_tubo=tanque.giro_tubo_ma
+								 	break;
 	}
 
 glutPostRedisplay();

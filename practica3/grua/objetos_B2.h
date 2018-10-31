@@ -57,7 +57,6 @@ public:
 //*************************************************************************
 // clase cono
 //*************************************************************************
-
 class _cilindro: public _triangulos3D
 {
 private:
@@ -146,4 +145,5 @@ public:
 	float giro_brazo_superior;
 	float rotar_brazo_superior;
 	float mover_mano;
+	float girar_suelo;
 };
