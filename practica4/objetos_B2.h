@@ -6,10 +6,12 @@
 #include <GL/gl.h>
 #include "vertex.h"
 #include <stdlib.h>
-
-
+#include "file_ply_stl.hpp"
+using namespace std;
 const float AXIS_SIZE=5000;
-typedef enum{POINTS,EDGES,SOLID_CHESS,SOLID} _modo;
+typedef enum{POINTS,EDGES,SOLID_CHESS,SOLID,SOLID_ILLUMINATED_FLAT,
+             SOLID_ILLUMINATED_GOURAUD, TEXTURE, TEXTURE_ILLUMINATED_FLAT,
+						 TEXTURE_ILLUMINATED_GOURAUD} _modo;
 
 //*************************************************************************
 // clase punto
@@ -26,7 +28,7 @@ void 	draw_puntos(float r, float g, float b, int grosor);
 vector<_vertex3f> vertices;
 };
 
-//*************************************************************************
+//********modo*****************************************************************
 // clase triángulo
 //*************************************************************************
 
@@ -38,9 +40,35 @@ public:
 void 	draw_aristas(float r, float g, float b, int grosor);
 void    draw_solido(float r, float g, float b);
 void 	draw_solido_ajedrez(float r1, float g1, float b1, float r2, float g2, float b2);
+void 	draw_iluminacion_plana( );
+void 	draw_iluminacion_suave( );
+void draw_textura(GLuint ident_textura);
+void draw_textura_iluminacion_plana(GLuint ident_textura);
+void draw_textura_iluminacion_suabe(GLuint ident_textura);
+
 void 	draw(_modo modo, float r1, float g1, float b1, float r2, float g2, float b2, float grosor);
 
+void	calcular_normales_caras();
+void 	calcular_normales_vertices();
+
 vector<_vertex3i> caras;
+
+vector<_vertex3f> normales_caras;
+vector<_vertex3f> normales_vertices;
+vector<_vertex2f> textura_coord;
+
+bool b_normales_caras;
+bool b_normales_vertices;
+bool b_textura_coord;
+
+_vertex4f ambiente_difusa;     //coeficientes ambiente y difuso
+_vertex4f especular;           //coeficiente especular
+float brillo;
+
+bool modo_text;
+GLfloat plano_s[4], plano_t[4];
+
+
 };
 
 
@@ -137,4 +165,17 @@ void  parametros(vector<_vertex3f> perfil1, int num1);
 
 vector<_vertex3f> perfil;
 int num;
+};
+
+class luz{
+public:
+	luz(GLenum p_luz_ind, _vertex4f p_luz_punto, _vertex4f p_luz_ambiente, _vertex4f p_luz_difusa, _vertex4f p_luz_especular);
+	void activar();
+	void transformar(GLenum p_luz_ind,float ang, float x, float y, float z);
+protected:
+	GLenum luz_ind;
+	_vertex4f luz_punto;
+	_vertex4f luz_ambiente;
+	_vertex4f luz_especular;
+	_vertex4f luz_difusa;
 };

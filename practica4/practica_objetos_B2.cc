@@ -33,13 +33,15 @@ _cubo cubo;
 _piramide piramide(0.85,1.3);
 _cono cono(0.85,1.3,20);
 _cilindro cilindro(0.85,1.3,20);
-_semiesfera semiesfera(0.85,12,6);
+_esfera semiesfera(0.85,40,20);
 _objeto_ply  ply;
 _rotacion rotacion;
 
 // _objeto_ply *ply1;
 
-
+luz *fuente_1 = NULL;
+float lAlfa, lx, ly, lz;
+float angulo_luz = 30.0;
 //**************************************************************************
 //
 //***************************************************************************
@@ -82,7 +84,7 @@ glRotatef(Observer_angle_y,0,1,0);
 }
 
 //**************************************************************************
-// Funcion que dibuja los ejes utilizando la primitiva grafica de lineas
+// Funciodraw_objen que dibuja los ejes utilizando la primitiva grafica de lineas
 //***************************************************************************
 
 void draw_axis()
@@ -126,16 +128,48 @@ switch (t_objeto){
 
 }
 
+void luces(float alfa){
+	GLfloat light_position[4] = {0,20,0,1},light1_position[4]={0,20,0,1},
+															light1_ambient[4]={0.1,0.0,0.0,1},
+															light1_intensity[4]={1.0,0.4,0.4,1};
 
+	glLightfv(GL_LIGHT1,GL_POSITION,light1_position);
+	glLightfv(GL_LIGHT1,GL_AMBIENT,light1_ambient);
+	glLightfv(GL_LIGHT1,GL_DIFFUSE,light1_intensity);
+	glLightfv(GL_LIGHT1,GL_SPECULAR,light1_intensity);
+	glPushMatrix();
+	glRotatef(alfa,0,1,0);
+	glLightfv(GL_LIGHT1,GL_POSITION,light_position);
+	glPopMatrix();
+
+}
+void luces2() {
+  GLfloat luz_posicion[] = {15.0, 10.0, 15.0 ,1.0};
+  GLfloat ambiente[] = {0.2, 0.2, 0.2 ,1.0};
+	GLfloat difusa[] = {1.0, 1.0, 1.0, 1.0 };
+	GLfloat especular[] = { 1.0, 1.0, 1.0, 1.0 };
+
+  glDisable(GL_LIGHT0);
+  glDisable(GL_LIGHT1);
+  glEnable(GL_LIGHT2);
+
+  glPushMatrix();
+    glRotatef (lAlfa, lx, ly, lz);
+    glLightfv(GL_LIGHT2, GL_AMBIENT, (GLfloat *) &ambiente);
+    glLightfv(GL_LIGHT2, GL_DIFFUSE, (GLfloat *) &difusa);
+    glLightfv(GL_LIGHT2, GL_SPECULAR, (GLfloat *) &especular);
+    glLightfv(GL_LIGHT2, GL_POSITION, (GLfloat *) &luz_posicion);
+  glPopMatrix();
+}
 //**************************************************************************
 //
 //***************************************************************************
 
 void draw(void)
 {
-
 clean_window();
 change_observer();
+luces2();
 draw_axis();
 draw_objects();
 glutSwapBuffers();
@@ -166,7 +200,7 @@ glutPostRedisplay();
 //**********-o*****************************************************************
 // Funcion llamada cuando se aprieta una tecla normal
 //
-// el evento manda a la funcion:
+// el evento manda a la funcion:cubo.ambiente_difusa = _vertex4f(0.5,0.5,0.5,1.0);
 // codigo de la tecla
 // posicion x del raton
 // posicion y del raton
@@ -178,15 +212,20 @@ switch (toupper(Tecla1)){
 	case 'Q':exit(0);
 	case '1':modo=POINTS;break;
 	case '2':modo=EDGES;break;
-	case 'S':modo=SOLID;break;
-	case 'A':modo=SOLID_CHESS;break;
-	case '3':t_objeto=CONO;break;
-	case '4':t_objeto=CILINDRO;break;
-	case '5':t_objeto=ESFERA;break;
-        case 'P':t_objeto=PIRAMIDE;break;
-        case 'C':t_objeto=CUBO;break;
-        case 'O':t_objeto=OBJETO_PLY;break;
-        case 'R':t_objeto=ROTACION;break;
+	case '3':modo=SOLID;break;
+	case '4':modo=SOLID_CHESS;break;
+	case '5':modo=SOLID_ILLUMINATED_FLAT;break;
+	case '6':modo=SOLID_ILLUMINATED_GOURAUD;break;
+  case '7':modo=TEXTURE;break;
+  case '8':modo=TEXTURE_ILLUMINATED_FLAT;break;
+  case '9':modo=TEXTURE_ILLUMINATED_GOURAUD;break;
+  case 'P':t_objeto=PIRAMIDE;break;
+	case 'C':t_objeto=CUBO;break;
+	case 'O':t_objeto=OBJETO_PLY;break;
+	case 'R':t_objeto=ROTACION;break;
+	case 'E':t_objeto=ESFERA;break;
+	//case 'A';break;
+	//case 'E':t_objeto=ESCENA;break;
 	}
 glutPostRedisplay();
 }
@@ -211,6 +250,21 @@ switch (Tecla1){
 	case GLUT_KEY_DOWN:Observer_angle_x++;break;
 	case GLUT_KEY_PAGE_UP:Observer_distance*=1.2;break;
 	case GLUT_KEY_PAGE_DOWN:Observer_distance/=1.2;break;
+	case GLUT_KEY_F10:
+      lAlfa = fmod(lAlfa + 5, 360.0);
+      lx = 1;
+      ly = lz = 0;
+      break;
+    case GLUT_KEY_F11:
+      lAlfa = fmod(lAlfa + 5, 360.0);
+      ly = 1;
+      lx = lz = 0;
+      break;
+    case GLUT_KEY_F12:
+      lAlfa = fmod(lAlfa + 5, 360.0);
+      lz = 1;
+      lx = ly = 0;
+break;
 	}
 glutPostRedisplay();
 }
@@ -244,7 +298,21 @@ glEnable(GL_DEPTH_TEST);
 change_projection();
 glViewport(0,0,Window_width,Window_high);
 
+cubo.ambiente_difusa = _vertex4f(0.5,0.5,0.5,1.0);
+cubo.especular = _vertex4f(0.5,0.5,0.5,1.0);
+cubo.brillo = 120;
 
+semiesfera.ambiente_difusa = _vertex4f(1,0,0,1.0);
+semiesfera.especular = _vertex4f(1,0,0,1.0);
+semiesfera.brillo = 30;
+
+ply.ambiente_difusa = _vertex4f(0.5,0.5,0.5,1.0);
+ply.especular = _vertex4f(0.5,0.5,0.5,1.0);
+ply.brillo = 120;
+
+piramide.ambiente_difusa = _vertex4f(0.5,0.5,0.5,1.0);
+piramide.especular = _vertex4f(0.5,0.5,0.5,1.0);
+piramide.brillo = 120;
 
 }
 
@@ -259,8 +327,6 @@ glViewport(0,0,Window_width,Window_high);
 
 int main(int argc, char *argv[] )
 {
-
-
 
 
 // perfil
