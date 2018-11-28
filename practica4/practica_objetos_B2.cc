@@ -1,6 +1,10 @@
 //**************************************************************************
 // Práctica 1 usando objetos
 //**************************************************************************
+#include <GL/gl.h>
+#include <GL/glu.h>
+
+#include <string>
 
 #include <GL/glut.h>
 #include <ctype.h>
@@ -10,6 +14,9 @@
 
 
 using namespace std;
+// NECESARIO PARA CARGAR LAS IMÁGENES DE DISCO
+#include "CImg.h"
+using namespace cimg_library;
 
 // tipos
 typedef enum{CUBO, PIRAMIDE, OBJETO_PLY, ROTACION, CONO, CILINDRO, ESFERA} _tipo_objeto;
@@ -115,16 +122,86 @@ glEnd();
 
 void draw_objects()
 {
+	if(modo != MATERIAL1 && modo != MATERIAL2 ){
+		switch (t_objeto){
+			case CUBO: cubo.draw(modo,1.0,0.0,0.0,0.0,1.0,0.0,2);break;
+			case CONO: cono.draw(modo,1.0,0.0,0.0,0.0,1.0,0.0,2);break;
+			case CILINDRO: cilindro.draw(modo,1.0,0.0,0.0,0.0,1.0,0.0,2);break;
+			case ESFERA: semiesfera.draw(modo,1.0,0.0,0.0,0.0,1.0,0.0,2);break;
+			case PIRAMIDE: piramide.draw(modo,1.0,0.0,0.0,0.0,1.0,0.0,2);break;
+		        case OBJETO_PLY: ply.draw(modo,1.0,0.6,0.0,0.0,1.0,0.3,2);break;
+		        case ROTACION: rotacion.draw(modo,1.0,0.0,0.0,0.0,1.0,0.0,2);break;
+			}
+		}else{
+			if(modo == MATERIAL1){
+	cout << "hola" << endl;
+				switch (t_objeto){
+					case CUBO:
+					cubo.ambiente_difusa = _vertex4f(0.5,0.5,0.5,1.0);
+					cubo.especular = _vertex4f(0.5,0.5,0.5,1.0);
+					cubo.brillo = 120;
+					cubo.draw(modo,1.0,0.0,0.0,0.0,1.0,0.0,2);
+					break;
 
-switch (t_objeto){
-	case CUBO: cubo.draw(modo,1.0,0.0,0.0,0.0,1.0,0.0,2);break;
-	case CONO: cono.draw(modo,1.0,0.0,0.0,0.0,1.0,0.0,2);break;
-	case CILINDRO: cilindro.draw(modo,1.0,0.0,0.0,0.0,1.0,0.0,2);break;
-	case ESFERA: semiesfera.draw(modo,1.0,0.0,0.0,0.0,1.0,0.0,2);break;
-	case PIRAMIDE: piramide.draw(modo,1.0,0.0,0.0,0.0,1.0,0.0,2);break;
-        case OBJETO_PLY: ply.draw(modo,1.0,0.6,0.0,0.0,1.0,0.3,2);break;
-        case ROTACION: rotacion.draw(modo,1.0,0.0,0.0,0.0,1.0,0.0,2);break;
-	}
+					case ESFERA:
+					semiesfera.ambiente_difusa = _vertex4f(1,0,0,1.0);
+					semiesfera.especular = _vertex4f(1,0,0,1.0);
+					semiesfera.brillo = 30;
+					semiesfera.draw(modo,1.0,0.0,0.0,0.0,1.0,0.0,2);
+					;break;
+
+					case PIRAMIDE:
+					piramide.ambiente_difusa = _vertex4f(0.5,0.5,0.5,1.0);
+					piramide.especular = _vertex4f(0.5,0.5,0.5,1.0);
+					piramide.brillo = 120;
+					piramide.draw(modo,1.0,0.0,0.0,0.0,1.0,0.0,2);
+					;break;
+				  case OBJETO_PLY:
+					ply.ambiente_difusa = _vertex4f(0.5,0.5,0.5,1.0);
+					ply.especular = _vertex4f(0.5,0.5,0.5,1.0);
+					ply.brillo = 120;
+					ply.draw(modo,1.0,0.6,0.0,0.0,1.0,0.3,2);
+					;break;
+
+					}
+
+
+
+
+			}else{
+				switch (t_objeto){
+					case CUBO:
+					cubo.ambiente_difusa = _vertex4f(0.0,0.5,0.5,0.8);
+					cubo.especular = _vertex4f(0.0,0.5,0.5,0.8);
+					cubo.brillo = 0.8;
+
+					cubo.draw(modo,1.0,0.0,0.0,0.0,1.0,0.0,2);
+					break;
+					case ESFERA:
+					semiesfera.ambiente_difusa = _vertex4f(1,0,1,0.8);
+					semiesfera.especular = _vertex4f(1,0,1,0.8);
+					semiesfera.brillo = 0.8;
+					semiesfera.draw(modo,1.0,0.0,0.0,0.0,1.0,0.0,2);
+					break;
+
+					case PIRAMIDE:
+					piramide.ambiente_difusa = _vertex4f(0.0,0.5,0.5,0.8);
+					piramide.especular = _vertex4f(0.0,0.5,0.5,0.8);
+					piramide.brillo = 0.8;
+					piramide.draw(modo,1.0,0.0,0.0,0.0,1.0,0.0,2);
+					break;
+				  case OBJETO_PLY:
+					ply.ambiente_difusa = _vertex4f(0.0,0.5,0.5,0.8);
+					ply.especular = _vertex4f(0.0,0.5,0.5,0.8);
+					ply.brillo = 0.8;
+					ply.draw(modo,1.0,0.6,0.0,0.0,1.0,0.3,2);
+					break;
+
+					}
+
+			}
+		}
+
 
 }
 
@@ -165,15 +242,6 @@ void luces2() {
 //
 //***************************************************************************
 
-void draw(void)
-{
-clean_window();
-change_observer();
-luces2();
-draw_axis();
-draw_objects();
-glutSwapBuffers();
-}
 
 
 
@@ -216,9 +284,13 @@ switch (toupper(Tecla1)){
 	case '4':modo=SOLID_CHESS;break;
 	case '5':modo=SOLID_ILLUMINATED_FLAT;break;
 	case '6':modo=SOLID_ILLUMINATED_GOURAUD;break;
-  case '7':modo=TEXTURE;break;
+
+  /*case '7':modo=TEXTURE;break;
   case '8':modo=TEXTURE_ILLUMINATED_FLAT;break;
-  case '9':modo=TEXTURE_ILLUMINATED_GOURAUD;break;
+  case '9':modo=TEXTURE_ILLUMINATED_GOURAUD;break;*/
+	case '0':modo=IMAGEN;break;
+	case 'Z':modo=MATERIAL1;break;
+	case 'X':modo=MATERIAL2;break;
   case 'P':t_objeto=PIRAMIDE;break;
 	case 'C':t_objeto=CUBO;break;
 	case 'O':t_objeto=OBJETO_PLY;break;
@@ -227,6 +299,7 @@ switch (toupper(Tecla1)){
 	//case 'A';break;
 	//case 'E':t_objeto=ESCENA;break;
 	}
+
 glutPostRedisplay();
 }
 
@@ -325,6 +398,102 @@ piramide.brillo = 120;
 //***************************************************************************
 
 
+
+
+//texturas
+//Functions declarations
+void Init();
+void OnDraw();
+
+// FUNCIÓN QUE PREPARA LA TEXTURA
+void prepara_textura(void);
+
+// FUNCIÓN QUE DIBUJA
+void dibuja(void);
+
+// FUNCIÓN QUE LIBERA LA TEXTURA DE GPU
+void libera_textura(void);
+
+
+// IDENTIFICADOR DE TEXTURA
+GLuint textura_id;
+GLfloat vertices[] = {0, 0,
+		      10, 0,
+		      10, 5,
+		      0, 5};
+GLfloat texVertices[] = {0.0,1.0,
+			 1.0,1.0,
+			 1.0,0.0,
+			 0.0,0.0};
+
+
+void Init(int argc, char **argv){
+   //Initialize GLUT windows manager
+   //Create the window
+   glutInit(&argc, argv);
+   glutInitWindowSize(800,600);
+   glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH);
+   glutCreateWindow("My World");
+
+   //enable lights and define perspective
+   //glEnable(GL_LIGHT0);
+   //glEnable(GL_LIGHTING);
+   glEnable(GL_DEPTH_TEST);
+   //glEnable(GL_COLOR_MATERIAL);
+   glMatrixMode(GL_PROJECTION);
+   gluPerspective( 40.0, 800/600.0f, 0.1, 150);
+
+   prepara_textura();
+}
+
+void OnDraw(void){
+   //cleaning the screen
+   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+   //Define view
+   glMatrixMode(GL_MODELVIEW);
+   glLoadIdentity();
+
+   // eye position -> (0.0, 10, 20)
+   // target -> (0,0,0)
+   // define positive Y axis  -> (0.0, 1.0, 0.0)
+   gluLookAt(5.0, 10, 20,
+	     0.0, 0, 0.0,
+	     0.0, 1.0, 0.0);
+   glTranslatef(-2,0,0);
+   //Put your code here to draw objects
+   dibuja();
+
+   //no delete this line
+   glutSwapBuffers();
+}
+
+/*int main(int argc, char** argv) {
+   Init(argc, argv);
+   //Enter the callbacks
+   glutDisplayFunc(OnDraw);
+
+   glutMainLoop(); // begin the loop
+
+   // LIBERA LA TEXTURA
+   libera_textura();
+   return 0;
+}*/
+void draw(void)
+{
+
+	clean_window();
+	change_observer();
+	luces2();
+	draw_axis();
+	if(modo != IMAGEN){
+		draw_objects();
+
+	}else
+		dibuja();
+	glutSwapBuffers();
+}
+
 int main(int argc, char *argv[] )
 {
 
@@ -389,7 +558,7 @@ glutInitWindowSize(Window_width,Window_high);
 // llamada para crear la ventana, indicando el titulo (no se visualiza hasta que se llama
 // al bucle de eventos)
 glutCreateWindow("PRACTICA - 2");
-
+prepara_textura();
 // asignación de la funcion llamada "dibujar" al evento de dibujo
 glutDisplayFunc(draw);
 // asignación de la funcion llamada "change_window_size" al evento correspondiente
@@ -409,5 +578,127 @@ ply.parametros(argv[1]);
 
 // inicio del bucle de eventos
 glutMainLoop();
+
+libera_textura();
 return 0;
+}
+
+
+// ----------------------------------------------------------------------
+void prepara_textura (void)
+{
+   vector<unsigned char> data;
+
+   CImg<unsigned char> logo;
+   logo.load("./logo.jpg");
+
+   // empaquetamos bien los datos
+   for (long y = 0; y < logo.height(); y ++)
+      for (long x = 0; x < logo.width(); x ++)
+      {
+	 unsigned char *r = logo.data(x, y, 0, 0);
+	 unsigned char *g = logo.data(x, y, 0, 1);
+	 unsigned char *b = logo.data(x, y, 0, 2);
+	 data.push_back(*r);
+	 data.push_back(*g);
+	 data.push_back(*b);
+      }
+
+   glGenTextures(1, &textura_id);
+   glBindTexture(GL_TEXTURE_2D, textura_id);
+
+   glActiveTexture(GL_TEXTURE0);
+   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+
+   // TRASFIERE LOS DATOS A GPU
+   glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, logo.width(), logo.height(),
+		0, GL_RGB, GL_UNSIGNED_BYTE, &data[0]);
+}
+
+
+void dibuja (void)
+{
+	GLfloat vertices[] = {
+	 /*0, 0, 0,
+	 1, 1, 0,
+	 1, 0, 0,
+	 0, 1, 0,
+	 0, 0, 1,
+	 1, 0, 1,
+	 1, 1, 1,
+	 0, 1, 1,
+	 0, 1, 1,
+	 0, 0, 1,
+	 0, 1, 0,
+	 0, 0, 0,
+	 0, 1, 1,
+	 0, 0, 1*/
+	 -0.5, 0.0, 0.5,   0.5, 0.0, 0.5,   0.5, 1.0, 0.5,  -0.5, 1.0, 0.5,
+		 -0.5, 1.0, -0.5,  0.5, 1.0, -0.5,  0.5, 0.0, -0.5, -0.5, 0.0, -0.5,
+		 0.5, 0.0, 0.5,   0.5, 0.0, -0.5,  0.5, 1.0, -0.5,  0.5, 1.0, 0.5,
+		 -0.5, 0.0, -0.5,  -0.5, 0.0, 0.5,  -0.5, 1.0, 0.5, -0.5, 1.0, -0.5
+ };
+ GLfloat texVertices[] = {
+	 /*0.75,0.5,
+		0.5,0.5,
+		0.5,0.25,
+	 0.75,0.25,
+			0,0.5,
+	 0.25,0.5,
+	 0.25,0.25,
+	 0,0.25,
+	 0.25,0,
+	 0.75,0.25,
+	 0.5,0,
+	 0.5,0.75,
+	 1,0.25,
+	 1,0.5*/
+	 0.0,0.0, 1.0,0.0, 1.0,1.0, 0.0,1.0,
+																	0.0,0.0, 1.0,0.0, 1.0,1.0, 0.0,1.0,
+																	0.0,0.0, 1.0,0.0, 1.0,1.0, 0.0,1.0,
+																	0.0,0.0, 1.0,0.0, 1.0,1.0, 0.0,1.0
+ };
+	 /*
+	glEnable(GL_TEXTURE_2D);
+	glEnableClientState(GL_VERTEX_ARRAY);
+	glEnableClientState (GL_TEXTURE_COORD_ARRAY_EXT);
+
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, textura_id);
+
+	glVertexPointer(3, GL_FLOAT, 0, vertices);
+	glTexCoordPointer(2, GL_FLOAT, 0, texVertices);
+
+	glDrawArrays(GL_QUADS, 0, 4);
+
+	glDisableClientState(GL_VERTEX_ARRAY);
+	glBindTexture(GL_TEXTURE_2D, 0);
+	glDisable(GL_TEXTURE_2D);
+	*/
+	GLubyte cubeIndices[24] = {0,1,2,3, 4,5,6,7, 3,2,5,4, 7,6,1,0,
+																 8,9,10,11, 12,13,14,15};
+	glEnable(GL_TEXTURE_2D);
+		 glBindTexture(GL_TEXTURE_2D, textura_id);
+		 glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
+		 glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+		 glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+		 glColor3f(1.0f, 1.0f, 1.0f);
+
+		 glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+		 glEnableClientState(GL_VERTEX_ARRAY);
+
+		 glTexCoordPointer(2, GL_FLOAT, 0, texVertices);
+		 glVertexPointer(3, GL_FLOAT, 0, vertices);
+
+		 glDrawElements(GL_QUADS, 24, GL_UNSIGNED_BYTE, cubeIndices);
+		 glDisableClientState(GL_VERTEX_ARRAY);
+	 glDisable(GL_TEXTURE_2D);
+}
+
+void libera_textura (void)
+{
+   glDeleteTextures(1, &textura_id);
 }

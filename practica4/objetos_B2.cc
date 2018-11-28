@@ -245,6 +245,8 @@ switch (modo){
 	case SOLID:draw_solido(r1, g1, b1);break;
 	case SOLID_ILLUMINATED_FLAT:draw_iluminacion_plana();break;
 	case SOLID_ILLUMINATED_GOURAUD:draw_iluminacion_suave();break;
+	case MATERIAL1:draw_iluminacion_plana();break;
+	case MATERIAL2:draw_iluminacion_plana();break;
 	}
 }
 
