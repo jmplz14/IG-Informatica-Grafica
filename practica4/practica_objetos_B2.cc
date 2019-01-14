@@ -22,6 +22,7 @@ using namespace cimg_library;
 typedef enum{CUBO, PIRAMIDE, OBJETO_PLY, ROTACION, CONO, CILINDRO, ESFERA} _tipo_objeto;
 _tipo_objeto t_objeto=CUBO;
 _modo   modo=POINTS;
+bool luz_roja=false;
 
 // variables que definen la posicion de la camara en coordenadas polares
 GLfloat Observer_distance;
@@ -41,6 +42,8 @@ _piramide piramide(0.85,1.3);
 _cono cono(0.85,1.3,20);
 _cilindro cilindro(0.85,1.3,20);
 _esfera semiesfera(0.85,40,20);
+_esfera esfera(0.85,40,20);
+_esfera esfera2(0.85,40,20);
 _objeto_ply  ply;
 _rotacion rotacion;
 
@@ -127,14 +130,21 @@ void draw_objects()
 			case CUBO: cubo.draw(modo,1.0,0.0,0.0,0.0,1.0,0.0,2);break;
 			case CONO: cono.draw(modo,1.0,0.0,0.0,0.0,1.0,0.0,2);break;
 			case CILINDRO: cilindro.draw(modo,1.0,0.0,0.0,0.0,1.0,0.0,2);break;
-			case ESFERA: semiesfera.draw(modo,1.0,0.0,0.0,0.0,1.0,0.0,2);break;
+			case ESFERA: modo=SOLID_ILLUMINATED_GOURAUD;
+			esfera.draw(modo,1.0,0.0,0.0,0.0,1.0,0.0,2);
+			glPushMatrix();
+
+				glTranslatef(2,0,0);
+				esfera2.draw(modo,1.0,0.0,0.0,0.0,1.0,0.0,2);
+			glPopMatrix();
+				break;
 			case PIRAMIDE: piramide.draw(modo,1.0,0.0,0.0,0.0,1.0,0.0,2);break;
 		        case OBJETO_PLY: ply.draw(modo,1.0,0.6,0.0,0.0,1.0,0.3,2);break;
 		        case ROTACION: rotacion.draw(modo,1.0,0.0,0.0,0.0,1.0,0.0,2);break;
 			}
 		}else{
 			if(modo == MATERIAL1){
-	cout << "hola" << endl;
+
 				switch (t_objeto){
 					case CUBO:
 					cubo.ambiente_difusa = _vertex4f(0.5,0.5,0.5,1.0);
@@ -144,10 +154,16 @@ void draw_objects()
 					break;
 
 					case ESFERA:
-					semiesfera.ambiente_difusa = _vertex4f(1,0,0,1.0);
-					semiesfera.especular = _vertex4f(1,0,0,1.0);
-					semiesfera.brillo = 30;
-					semiesfera.draw(modo,1.0,0.0,0.0,0.0,1.0,0.0,2);
+					/*semiesfera.ambiente_difusa = _vertex4f(0.25,0.20725,0.20725,0.922);
+					semiesfera.especular = _vertex4f(0.296648,0.296648,0.296648,0.922);
+					semiesfera.brillo = 30;*/
+					modo=SOLID_ILLUMINATED_GOURAUD;
+					esfera.draw(modo,1.0,0.0,0.0,0.0,1.0,0.0,2);
+					glPushMatrix();
+
+						glTranslatef(2,0,0);
+						esfera2.draw(modo,1.0,0.0,0.0,0.0,1.0,0.0,2);
+					glPopMatrix();
 					;break;
 
 					case PIRAMIDE:
@@ -178,10 +194,13 @@ void draw_objects()
 					cubo.draw(modo,1.0,0.0,0.0,0.0,1.0,0.0,2);
 					break;
 					case ESFERA:
-					semiesfera.ambiente_difusa = _vertex4f(1,0,1,0.8);
-					semiesfera.especular = _vertex4f(1,0,1,0.8);
-					semiesfera.brillo = 0.8;
-					semiesfera.draw(modo,1.0,0.0,0.0,0.0,1.0,0.0,2);
+					modo=SOLID_ILLUMINATED_GOURAUD;
+					esfera.draw(modo,1.0,0.0,0.0,0.0,1.0,0.0,2);
+					glPushMatrix();
+
+						glTranslatef(2,0,0);
+						esfera2.draw(modo,1.0,0.0,0.0,0.0,1.0,0.0,2);
+					glPopMatrix();
 					break;
 
 					case PIRAMIDE:
@@ -205,35 +224,61 @@ void draw_objects()
 
 }
 
-void luces(float alfa){
+void luces(){
 	GLfloat light_position[4] = {0,20,0,1},light1_position[4]={0,20,0,1},
-															light1_ambient[4]={0.1,0.0,0.0,1},
-															light1_intensity[4]={1.0,0.4,0.4,1};
+															light1_ambient[4]={0.1,0.1,0.1,1},
+															light1_intensity[4]={0.4,0.4,0.4,1};
 
 	glLightfv(GL_LIGHT1,GL_POSITION,light1_position);
 	glLightfv(GL_LIGHT1,GL_AMBIENT,light1_ambient);
 	glLightfv(GL_LIGHT1,GL_DIFFUSE,light1_intensity);
 	glLightfv(GL_LIGHT1,GL_SPECULAR,light1_intensity);
 	glPushMatrix();
-	glRotatef(alfa,0,1,0);
+	//glRotatef(alfa,0,1,0);
 	glLightfv(GL_LIGHT1,GL_POSITION,light_position);
 	glPopMatrix();
 
 }
 void luces2() {
-  GLfloat luz_posicion[] = {15.0, 10.0, 15.0 ,1.0};
-  GLfloat ambiente[] = {0.2, 0.2, 0.2 ,1.0};
-	GLfloat difusa[] = {1.0, 1.0, 1.0, 1.0 };
-	GLfloat especular[] = { 1.0, 1.0, 1.0, 1.0 };
-
+  GLfloat luz_posicion[] = {2, 2, 0 ,1.0};
+  GLfloat ambiente[] = {0.3, 0.3, 0.3 ,1};
+	GLfloat difusa[] = {0.3, 0.3, 0.3, 1 };
+	GLfloat especular[] = { 0.3, 0.3, 0.3, 1 };
+	//desabiltar luces hay hasta la 7
   glDisable(GL_LIGHT0);
   glDisable(GL_LIGHT1);
+	//habilitamos luces
   glEnable(GL_LIGHT2);
 
   glPushMatrix();
     glRotatef (lAlfa, lx, ly, lz);
+		//cambia el color de la luz ambiente que le da a todo
     glLightfv(GL_LIGHT2, GL_AMBIENT, (GLfloat *) &ambiente);
+		//Color real de la luz que enfoca desde la posicion en la que se encuentre
     glLightfv(GL_LIGHT2, GL_DIFFUSE, (GLfloat *) &difusa);
+		//Luces que rebotan con el mismo angulo con el que llegaron
+    glLightfv(GL_LIGHT2, GL_SPECULAR, (GLfloat *) &especular);
+    glLightfv(GL_LIGHT2, GL_POSITION, (GLfloat *) &luz_posicion);
+  glPopMatrix();
+}
+void luces3() {
+  GLfloat luz_posicion[] = {-2, -2, 2 ,1.0};
+  GLfloat ambiente[] = {0.3, 0.3, 0.3,1};
+	GLfloat difusa[] = {1, 0, 0, 1 };
+	GLfloat especular[] = { 1, 0, 0, 1 };
+	//desabiltar luces hay hasta la 7
+  glDisable(GL_LIGHT0);
+  glDisable(GL_LIGHT1);
+	//habilitamos luces
+  glEnable(GL_LIGHT2);
+
+  glPushMatrix();
+    glRotatef (lAlfa, lx, ly, lz);
+		//cambia el color de la luz ambiente que le da a todo
+    glLightfv(GL_LIGHT2, GL_AMBIENT, (GLfloat *) &ambiente);
+		//Color real de la luz que enfoca desde la posicion en la que se encuentre
+    glLightfv(GL_LIGHT2, GL_DIFFUSE, (GLfloat *) &difusa);
+		//Luces que rebotan con el mismo angulo con el que llegaron
     glLightfv(GL_LIGHT2, GL_SPECULAR, (GLfloat *) &especular);
     glLightfv(GL_LIGHT2, GL_POSITION, (GLfloat *) &luz_posicion);
   glPopMatrix();
@@ -285,9 +330,9 @@ switch (toupper(Tecla1)){
 	case '5':modo=SOLID_ILLUMINATED_FLAT;break;
 	case '6':modo=SOLID_ILLUMINATED_GOURAUD;break;
 
-  /*case '7':modo=TEXTURE;break;
+  case '7':modo=TEXTURE;break;
   case '8':modo=TEXTURE_ILLUMINATED_FLAT;break;
-  case '9':modo=TEXTURE_ILLUMINATED_GOURAUD;break;*/
+  case '9':modo=TEXTURE_ILLUMINATED_GOURAUD;break;
 	case '0':modo=IMAGEN;break;
 	case 'Z':modo=MATERIAL1;break;
 	case 'X':modo=MATERIAL2;break;
@@ -296,6 +341,17 @@ switch (toupper(Tecla1)){
 	case 'O':t_objeto=OBJETO_PLY;break;
 	case 'R':t_objeto=ROTACION;break;
 	case 'E':t_objeto=ESFERA;break;
+	case 'J':
+		if(luz_roja)
+			luz_roja = false;
+		else
+			luz_roja = true;
+	;break;
+	case 'H':
+		lAlfa = fmod(lAlfa + 5, 360.0);
+		lz = 1;
+		lx = ly = 0;;break;
+
 	//case 'A';break;
 	//case 'E':t_objeto=ESCENA;break;
 	}
@@ -330,8 +386,8 @@ switch (Tecla1){
       break;
     case GLUT_KEY_F11:
       lAlfa = fmod(lAlfa + 5, 360.0);
-      ly = 1;
-      lx = lz = 0;
+      lz = 1;
+      lx = ly = 0;
       break;
     case GLUT_KEY_F12:
       lAlfa = fmod(lAlfa + 5, 360.0);
@@ -375,9 +431,13 @@ cubo.ambiente_difusa = _vertex4f(0.5,0.5,0.5,1.0);
 cubo.especular = _vertex4f(0.5,0.5,0.5,1.0);
 cubo.brillo = 120;
 
-semiesfera.ambiente_difusa = _vertex4f(1,0,0,1.0);
-semiesfera.especular = _vertex4f(1,0,0,1.0);
-semiesfera.brillo = 30;
+esfera.ambiente_difusa = _vertex4f(1,1,0.85,1);
+esfera.especular = _vertex4f(0.3,0.3,0.25,0.95);
+esfera.brillo = 97;
+
+esfera2.ambiente_difusa = _vertex4f(0.29296875,0.2109375,0.12890625,1);
+esfera2.especular = _vertex4f(0.3,0.3,0.25,0.95);
+esfera2.brillo = 97;
 
 ply.ambiente_difusa = _vertex4f(0.5,0.5,0.5,1.0);
 ply.especular = _vertex4f(0.5,0.5,0.5,1.0);
@@ -484,11 +544,15 @@ void draw(void)
 
 	clean_window();
 	change_observer();
-	luces2();
+	if(!luz_roja){
+		luces2();
+	}else{
+		luces3();
+	}
+
 	draw_axis();
 	if(modo != IMAGEN){
 		draw_objects();
-
 	}else
 		dibuja();
 	glutSwapBuffers();
@@ -507,7 +571,6 @@ aux.x=1.0; aux.y=-1.0; aux.z=0.0;
 perfil2.push_back(aux);
 aux.x=1.0; aux.y=1.0; aux.z=0.0;
 perfil2.push_back(aux);
-
 
 rotacion.parametros(perfil2,6);
 /*aux.x=1.0;aux.y=-1.4;aux.z=0.0;
@@ -590,7 +653,7 @@ void prepara_textura (void)
    vector<unsigned char> data;
 
    CImg<unsigned char> logo;
-   logo.load("./logo.jpg");
+   logo.load("./abeto.jpg");
 
    // empaquetamos bien los datos
    for (long y = 0; y < logo.height(); y ++)
@@ -619,48 +682,51 @@ void prepara_textura (void)
 }
 
 
-void dibuja (void)
-{
-	GLfloat vertices[] = {
-	 /*0, 0, 0,
-	 1, 1, 0,
-	 1, 0, 0,
-	 0, 1, 0,
-	 0, 0, 1,
-	 1, 0, 1,
-	 1, 1, 1,
-	 0, 1, 1,
-	 0, 1, 1,
-	 0, 0, 1,
-	 0, 1, 0,
-	 0, 0, 0,
-	 0, 1, 1,
-	 0, 0, 1*/
-	 -0.5, 0.0, 0.5,   0.5, 0.0, 0.5,   0.5, 1.0, 0.5,  -0.5, 1.0, 0.5,
-		 -0.5, 1.0, -0.5,  0.5, 1.0, -0.5,  0.5, 0.0, -0.5, -0.5, 0.0, -0.5,
-		 0.5, 0.0, 0.5,   0.5, 0.0, -0.5,  0.5, 1.0, -0.5,  0.5, 1.0, 0.5,
-		 -0.5, 0.0, -0.5,  -0.5, 0.0, 0.5,  -0.5, 1.0, 0.5, -0.5, 1.0, -0.5
- };
- GLfloat texVertices[] = {
-	 /*0.75,0.5,
-		0.5,0.5,
-		0.5,0.25,
-	 0.75,0.25,
-			0,0.5,
-	 0.25,0.5,
-	 0.25,0.25,
-	 0,0.25,
-	 0.25,0,
-	 0.75,0.25,
-	 0.5,0,
-	 0.5,0.75,
-	 1,0.25,
-	 1,0.5*/
-	 0.0,0.0, 1.0,0.0, 1.0,1.0, 0.0,1.0,
-																	0.0,0.0, 1.0,0.0, 1.0,1.0, 0.0,1.0,
-																	0.0,0.0, 1.0,0.0, 1.0,1.0, 0.0,1.0,
-																	0.0,0.0, 1.0,0.0, 1.0,1.0, 0.0,1.0
- };
+
+
+ void dibujacubo (void)
+ {
+ 	GLfloat vertices[] = {
+ 	 /*0, 0, 0,
+ 	 1, 1, 0,
+ 	 1, 0, 0,
+ 	 0, 1, 0,
+ 	 0, 0, 1,
+ 	 1, 0, 1,
+ 	 1, 1, 1,
+ 	 0, 1, 1,
+ 	 0, 1, 1,
+ 	 0, 0, 1,
+ 	 0, 1, 0,
+ 	 0, 0, 0,
+ 	 0, 1, 1,
+ 	 0, 0, 1*/
+ 	 -0.5, 0.0, 0.5,   0.5, 0.0, 0.5,   0.5, 1.0, 0.5,  -0.5, 1.0, 0.5,
+ 		 -0.5, 1.0, -0.5,  0.5, 1.0, -0.5,  0.5, 0.0, -0.5, -0.5, 0.0, -0.5,
+ 		 0.5, 0.0, 0.5,   0.5, 0.0, -0.5,  0.5, 1.0, -0.5,  0.5, 1.0, 0.5,
+ 		 -0.5, 0.0, -0.5,  -0.5, 0.0, 0.5,  -0.5, 1.0, 0.5, -0.5, 1.0, -0.5
+  };
+  GLfloat texVertices[] = {
+ 	 /*0.75,0.5,
+ 		0.5,0.5,
+ 		0.5,0.25,
+ 	 0.75,0.25,
+ 			0,0.5,
+ 	 0.25,0.5,
+ 	 0.25,0.25,
+ 	 0,0.25,
+ 	 0.25,0,
+ 	 0.75,0.25,
+ 	 0.5,0,
+ 	 0.5,0.75,
+ 	 1,0.25,
+ 	 1,0.5*/
+ 	 0.0,0.0, 1.0,0.0, 1.0,1.0, 0.0,1.0,
+ 																	0.0,0.0, 1.0,0.0, 1.0,1.0, 0.0,1.0,
+ 																	0.0,0.0, 1.0,0.0, 1.0,1.0, 0.0,1.0,
+ 																	0.0,0.0, 1.0,0.0, 1.0,1.0, 0.0,1.0
+  };
+
 	 /*
 	glEnable(GL_TEXTURE_2D);
 	glEnableClientState(GL_VERTEX_ARRAY);
@@ -696,7 +762,347 @@ void dibuja (void)
 		 glDrawElements(GL_QUADS, 24, GL_UNSIGNED_BYTE, cubeIndices);
 		 glDisableClientState(GL_VERTEX_ARRAY);
 	 glDisable(GL_TEXTURE_2D);
+
 }
+
+void dibujaportatil (void)
+{
+ GLfloat vertices[] = {
+	/*0, 0, 0,
+	1, 1, 0,
+	1, 0, 0,
+	0, 1, 0,
+	0, 0, 1,
+	1, 0, 1,
+	1, 1, 1,
+	0, 1, 1,
+	0, 1, 1,
+	0, 0, 1,
+	0, 1, 0,
+	0, 0, 0,
+	0, 1, 1,
+	0, 0, 1*/
+	-5,0,0, 0,0,0, 0,1,0, -5,1,0,
+	-5,0,1, 0,0,1,
+
+ };
+ GLfloat texVertices[] = {
+	/*0.75,0.5,
+	 0.5,0.5,
+	 0.5,0.25,
+	0.75,0.25,
+		 0,0.5,
+	0.25,0.5,
+	0.25,0.25,
+	0,0.25,
+	0.25,0,
+	0.75,0.25,
+	0.5,0,
+	0.5,0.75,
+	1,0.25,
+	1,0.5*/
+	0,0.5, 1,0.5, 1,0, 0,0,
+	0,1, 1,1
+
+ };
+
+	/*
+ glEnable(GL_TEXTURE_2D);
+ glEnableClientState(GL_VERTEX_ARRAY);
+ glEnableClientState (GL_TEXTURE_COORD_ARRAY_EXT);
+
+ glActiveTexture(GL_TEXTURE0);
+ glBindTexture(GL_TEXTURE_2D, textura_id);
+
+ glVertexPointer(3, GL_FLOAT, 0, vertices);
+ glTexCoordPointer(2, GL_FLOAT, 0, texVertices);
+
+ glDrawArrays(GL_QUADS, 0, 4);
+
+ glDisableClientState(GL_VERTEX_ARRAY);
+ glBindTexture(GL_TEXTURE_2D, 0);
+ glDisable(GL_TEXTURE_2D);
+ */
+ GLubyte cubeIndices[8] = {0,1,2,3, 4,5,1,0};
+ glEnable(GL_TEXTURE_2D);
+		glBindTexture(GL_TEXTURE_2D, textura_id);
+		glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+		glColor3f(1.0f, 1.0f, 1.0f);
+
+		glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+		glEnableClientState(GL_VERTEX_ARRAY);
+
+		glTexCoordPointer(2, GL_FLOAT, 0, texVertices);
+		glVertexPointer(3, GL_FLOAT, 0, vertices);
+
+		glDrawElements(GL_QUADS, 8, GL_UNSIGNED_BYTE, cubeIndices);
+		glDisableClientState(GL_VERTEX_ARRAY);
+	glDisable(GL_TEXTURE_2D);
+}
+
+	void dibuja (void)
+	{
+	 GLfloat vertices[] = {
+		/*0, 0, 0,
+		1, 1, 0,
+		1, 0, 0,
+		0, 1, 0,
+		0, 0, 1,
+		1, 0, 1,
+		1, 1, 1,
+		0, 1, 1,
+		0, 1, 1,
+		0, 0, 1,
+		0, 1, 0,
+		0, 0, 0,
+		0, 1, 1,
+		0, 0, 1*/
+		-1,0,-1, -1,0,1, 1,0,1, 1,0,-1, 0,1,0
+		/*-1,0,-1, -1,0,1, 1,0,1, 1,0,-1*/
+	 };
+	 GLfloat texVertices[] = {
+		/*0.75,0.5,
+		 0.5,0.5,
+		 0.5,0.25,
+		0.75,0.25,
+			 0,0.5,
+		0.25,0.5,
+		0.25,0.25,
+		0,0.25,
+		0.25,0,
+		0.75,0.25,
+		0.5,0,
+		0.5,0.75,
+		1,0.25,
+		1,0.5*/
+		0,1, 1,1, 0,1, 1,1, 0.5,0
+	 };
+	 GLfloat verticesCu[] = {
+		/*0, 0, 0,
+		1, 1, 0,
+		1, 0, 0,
+		0, 1, 0,
+		0, 0, 1,
+		1, 0, 1,
+		1, 1, 1,
+		0, 1, 1,
+		0, 1, 1,
+		0, 0, 1,
+		0, 1, 0,
+		0, 0, 0,
+		0, 1, 1,
+		0, 0, 1*/
+		-1,0,-1, -1,0,1, 1,0,1, 1,0,-1
+	 };
+	 GLfloat texVerticesCu[] = {
+		/*0.75,0.5,
+		 0.5,0.5,
+		 0.5,0.25,
+		0.75,0.25,
+			 0,0.5,
+		0.25,0.5,
+		0.25,0.25,
+		0,0.25,
+		0.25,0,
+		0.75,0.25,
+		0.5,0,
+		0.5,0.75,
+		1,0.25,
+		1,0.5*/
+		0,0, 0,1, 1,1, 1,0
+	 };
+
+		/*
+	 glEnable(GL_TEXTURE_2D);
+	 glEnableClientState(GL_VERTEX_ARRAY);
+	 glEnableClientState (GL_TEXTURE_COORD_ARRAY_EXT);
+
+	 glActiveTexture(GL_TEXTURE0);
+	 glBindTexture(GL_TEXTURE_2D, textura_id);
+
+	 glVertexPointer(3, GL_FLOAT, 0, vertices);
+	 glTexCoordPointer(2, GL_FLOAT, 0, texVertices);
+
+	 glDrawArrays(GL_QUADS, 0, 4);
+
+	 glDisableClientState(GL_VERTEX_ARRAY);
+	 glBindTexture(GL_TEXTURE_2D, 0);
+	 glDisable(GL_TEXTURE_2D);
+	 */
+	 GLubyte cubeIndices[12] = {0,1,4, 1,2,4, 2,3,4, 3,0,4};
+	 glEnable(GL_TEXTURE_2D);
+			glBindTexture(GL_TEXTURE_2D, textura_id);
+			glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+			glColor3f(1.0f, 1.0f, 1.0f);
+
+			glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+			glEnableClientState(GL_VERTEX_ARRAY);
+
+			glTexCoordPointer(2, GL_FLOAT, 0, texVertices);
+			glVertexPointer(3, GL_FLOAT, 0, vertices);
+
+			glDrawElements( GL_TRIANGLES, 12, GL_UNSIGNED_BYTE, cubeIndices);
+			glDisableClientState(GL_VERTEX_ARRAY);
+		glDisable(GL_TEXTURE_2D);
+
+		GLubyte baIndices[4] = {0,1,2,3};
+ 	 glEnable(GL_TEXTURE_2D);
+ 			glBindTexture(GL_TEXTURE_2D, textura_id);
+ 			glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
+ 			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+ 			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+ 			glColor3f(1.0f, 1.0f, 1.0f);
+
+ 			glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+ 			glEnableClientState(GL_VERTEX_ARRAY);
+
+ 			glTexCoordPointer(2, GL_FLOAT, 0, texVerticesCu);
+ 			glVertexPointer(3, GL_FLOAT, 0, verticesCu);
+
+ 			glDrawElements( GL_QUADS, 4, GL_UNSIGNED_BYTE, baIndices);
+ 			glDisableClientState(GL_VERTEX_ARRAY);
+ 		glDisable(GL_TEXTURE_2D);
+		int i = 0;
+		for(i = 0; i < 4 ; i++){
+			verticesCu[i*3 + 1] += 0.5;
+		}
+
+		for(i = 0; i < 5 ; i++){
+			vertices[i*3 + 1] += 0.5;
+		}
+		glEnable(GL_TEXTURE_2D);
+ 			glBindTexture(GL_TEXTURE_2D, textura_id);
+ 			glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
+ 			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+ 			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+ 			glColor3f(1.0f, 1.0f, 1.0f);
+
+ 			glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+ 			glEnableClientState(GL_VERTEX_ARRAY);
+
+ 			glTexCoordPointer(2, GL_FLOAT, 0, texVertices);
+ 			glVertexPointer(3, GL_FLOAT, 0, vertices);
+
+ 			glDrawElements( GL_TRIANGLES, 12, GL_UNSIGNED_BYTE, cubeIndices);
+ 			glDisableClientState(GL_VERTEX_ARRAY);
+ 		glDisable(GL_TEXTURE_2D);
+
+		glEnable(GL_TEXTURE_2D);
+  			glBindTexture(GL_TEXTURE_2D, textura_id);
+  			glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
+  			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+  			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+  			glColor3f(1.0f, 1.0f, 1.0f);
+
+  			glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+  			glEnableClientState(GL_VERTEX_ARRAY);
+
+  			glTexCoordPointer(2, GL_FLOAT, 0, texVerticesCu);
+  			glVertexPointer(3, GL_FLOAT, 0, verticesCu);
+
+  			glDrawElements( GL_QUADS, 4, GL_UNSIGNED_BYTE, baIndices);
+  			glDisableClientState(GL_VERTEX_ARRAY);
+  		glDisable(GL_TEXTURE_2D);
+
+
+	}
+
+	void dibujaskybox(void)
+	{
+	 GLfloat vertices[] = {
+		/*0, 0, 0,
+		1, 1, 0,
+		1, 0, 0,
+		0, 1, 0,
+		0, 0, 1,
+		1, 0, 1,
+		1, 1, 1,
+		0, 1, 1,
+		0, 1, 1,
+		0, 0, 1,
+		0, 1, 0,
+		0, 0, 0,
+		0, 1, 1,
+		0, 0, 1*/
+		//base del suelo
+		-2,0,0, -2,0,2, 0,0,2, 0,0,0,
+		//bsae del cielo
+		-2,2,0, -2,2,2, 0,2,2, 0,2,0,
+		//lado izquierdo
+		-2,2,2, -2,0,2,
+		//lado derecho
+		0,2,2, 0,0,2,
+
+		//ultima tapa
+		-2,2,2, -2,0,2
+	 };
+
+	 GLfloat texVertices[] = {
+		/*0.75,0.5,
+		 0.5,0.5,
+		 0.5,0.25,
+		0.75,0.25,
+			 0,0.5,
+		0.25,0.5,
+		0.25,0.25,
+		0,0.25,
+		0.25,0,
+		0.75,0.25,
+		0.5,0,
+		0.5,0.75,
+		1,0.25,
+		1,0.5*/
+		0.25,0.5, 0.25,0.75, 0.5,0.75, 0.5,0.5,
+
+		0.25,0.25, 0.25,0, 0.5,0, 0.5,0.25,
+
+		0,0.25, 0,0.50,
+
+		0.75,0.25, 0.75,0.5,
+		//Tapa del fondo no necesita nuevos punto
+		//Tapa izquierdad
+		1,0.25, 1,0.5
+	 };
+
+		/*
+	 glEnable(GL_TEXTURE_2D);
+	 glEnableClientState(GL_VERTEX_ARRAY);
+	 glEnableClientState (GL_TEXTURE_COORD_ARRAY_EXT);
+
+	 glActiveTexture(GL_TEXTURE0);
+	 glBindTexture(GL_TEXTURE_2D, textura_id);
+
+	 glVertexPointer(3, GL_FLOAT, 0, vertices);
+	 glTexCoordPointer(2, GL_FLOAT, 0, texVertices);
+
+	 glDrawArrays(GL_QUADS, 0, 4);
+
+	 glDisableClientState(GL_VERTEX_ARRAY);
+	 glBindTexture(GL_TEXTURE_2D, 0);
+	 glDisable(GL_TEXTURE_2D);
+	 */
+	 GLubyte cubeIndices[24] = {0,1,2,3, 4,5,6,7, 0,3,7,4, 4,0,9,8, 7,3,11,10, 10,11,13,12 };
+	 glEnable(GL_TEXTURE_2D);
+			glBindTexture(GL_TEXTURE_2D, textura_id);
+			glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+			glColor3f(1.0f, 1.0f, 1.0f);
+
+			glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+			glEnableClientState(GL_VERTEX_ARRAY);
+
+			glTexCoordPointer(2, GL_FLOAT, 0, texVertices);
+			glVertexPointer(3, GL_FLOAT, 0, vertices);
+
+			glDrawElements(GL_QUADS, 24, GL_UNSIGNED_BYTE, cubeIndices);
+			glDisableClientState(GL_VERTEX_ARRAY);
+		glDisable(GL_TEXTURE_2D);
+	}
 
 void libera_textura (void)
 {

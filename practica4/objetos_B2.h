@@ -11,7 +11,7 @@ using namespace std;
 const float AXIS_SIZE=5000;
 typedef enum{POINTS,EDGES,SOLID_CHESS,SOLID,SOLID_ILLUMINATED_FLAT,
              SOLID_ILLUMINATED_GOURAUD, TEXTURE, TEXTURE_ILLUMINATED_FLAT,
-						 TEXTURE_ILLUMINATED_GOURAUD,IMAGEN,MATERIAL1,MATERIAL2} _modo;
+						 TEXTURE_ILLUMINATED_GOURAUD,IMAGEN,MATERIAL1,MATERIAL2,LUZROJA} _modo;
 
 //*************************************************************************
 // clase punto
