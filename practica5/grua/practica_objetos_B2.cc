@@ -77,13 +77,15 @@ glFrustum(-Size_x,Size_x,-Size_y,Size_y,Front_plane,Back_plane);
 
 void change_observer()
 {
-
+cout << "Cambiando observador" << endl;
 // posicion del observador
 glMatrixMode(GL_MODELVIEW);
 glLoadIdentity();
 glTranslatef(0,0,-Observer_distance);
 glRotatef(Observer_angle_x,1,0,0);
 glRotatef(Observer_angle_y,0,1,0);
+
+
 }
 
 //**************************************************************************
@@ -127,7 +129,7 @@ switch (t_objeto){
 	case PIRAMIDE: piramide.draw(modo,1.0,0.0,0.0,0.0,1.0,0.0,2);break;
         case OBJETO_PLY: ply.draw(modo,1.0,0.6,0.0,0.0,1.0,0.3,2);break;
         case ROTACION: rotacion.draw(modo,1.0,0.0,0.0,0.0,1.0,0.0,2);break;
-				case ARTICULADO: grua.draw(modo,1.0,0.0,0.0,0.0,1.0,0.0,2);cout << "Dibujo grua"<< endl;break;
+				case ARTICULADO: grua.draw(modo,1.0,0.0,0.0,0.0,1.0,0.0,2);break;
 	}
 
 }
@@ -139,7 +141,6 @@ switch (t_objeto){
 
 void draw_click(void)
 {
-	cout << "dibujado fondo"<<endl;
 	clean_window();
 	change_observer();
 	draw_axis();
@@ -191,11 +192,9 @@ void draw(void)
 {
 
 	if(t_objeto == ARTICULADO){
-		cout <<"dentro de draw"<<endl;
 		draw_click();
 		cambioDraw = true;
 	}else{
-		cout <<"fuera de draw"<<endl;
 		draw_sinclick();
 		cambioDraw = false;
 	}
@@ -334,11 +333,11 @@ void procesar_color(unsigned char color[3])
 
 
  switch (color[0])
-      {case 100: obj=0;encontrado = true;cout << "entrado0" << endl;break;
-        case 120: obj=1;encontrado = true;cout << "entrado1" << endl;break;
-        case 140: obj=2;encontrado = true;cout << "entrado2" << endl;break;
-        case 160: obj=3;encontrado = true;cout << "entrado3" << endl;break;
-        case 180: obj=4;encontrado = true;cout << "entrado4" << endl;break;}
+      {case 100: obj=0;encontrado = true;break;
+        case 120: obj=1;encontrado = true;break;
+        case 140: obj=2;encontrado = true;break;
+        case 160: obj=3;encontrado = true;break;
+        case 180: obj=4;encontrado = true;;break;}
 				if(encontrado){
 					grua.cambiarEstado(obj);
 					//grua.draw(modo,1.0,0.0,0.0,0.0,1.0,0.0,2);
@@ -363,15 +362,15 @@ void procesar_color(unsigned char color[3])
 
 void clickRaton( int boton, int estado, int x, int y )
 {
-/*if(boton== GLUT_RIGHT_BUTTON) {
+if(boton == GLUT_RIGHT_BUTTON) {
    if( estado == GLUT_DOWN) {
       estadoRaton[2] = 1;
       xc=x;
       yc=y;
      }
    else estadoRaton[2] = 1;
- }*/
-if(boton== GLUT_LEFT_BUTTON) {
+ }
+if(boton == GLUT_LEFT_BUTTON) {
   if( estado == GLUT_DOWN) {
       estadoRaton[2] = 2;
       xc=x;
@@ -379,7 +378,72 @@ if(boton== GLUT_LEFT_BUTTON) {
       pick_color(xc, yc);
     }
   }
+	if(boton == 3){
+		cout << "dentro scroll" << endl;
+		Observer_distance*=1.2;
+		glutPostRedisplay();
+
+	}
+	if(boton == 4){
+		Observer_distance/=1.2;
+		glutPostRedisplay();
+	}
 }
+
+void getCamara (GLfloat *x, GLfloat *y)
+{
+*x=Observer_angle_x;
+*y=Observer_angle_y;
+}
+void setCamara (GLfloat x, GLfloat y)
+{
+Observer_angle_x+=y;
+Observer_angle_y+=x;
+}
+
+void RatonMovido( int x, int y )
+{
+
+float x0, y0, xn, yn;
+if(estadoRaton[2]==1)
+    {
+			 getCamara(&x0,&y0);
+	     yn=y-yc;
+
+	     xn=x-xc;
+			 cout << "y:" << y << ":" << yc << endl;
+			 cout << "x:" << x << ":" << xc << endl;
+	     setCamara(xn,yn);
+	     xc=x;
+	     yc=y;
+	     glutPostRedisplay();
+    }
+}
+
+void setCamaraAntiguo (GLfloat x, GLfloat y)
+{
+Observer_angle_x=x;
+Observer_angle_y=y;
+}
+
+/*verde = y, azul = z y rojo = x*/
+
+/*************************************************************************/
+
+void RatonMovidoAntiguo( int x, int y )
+{
+float x0, y0, xn, yn;
+if(estadoRaton[2]==1)
+    {getCamara(&x0,&y0);
+     yn=y0+(y-yc);
+     xn=x0-(x-xc);
+     setCamara(xn,yn);
+     xc=x;
+     yc=y;
+     glutPostRedisplay();
+    }
+}
+
 
 //***************************************************************************
 // Programa principal
@@ -387,6 +451,7 @@ if(boton== GLUT_LEFT_BUTTON) {
 // Se encarga de iniciar la ventana, asignar las funciones e comenzar el
 // bucle de eventos
 //***************************************************************************
+
 
 
 int main(int argc, char *argv[] )
@@ -466,6 +531,9 @@ glutKeyboardFunc(normal_key);
 glutSpecialFunc(special_key);
 
 glutMouseFunc( clickRaton );
+glutMotionFunc( RatonMovido );
+//glutMouseWheelFunc(mouseWheel);
+//glutMousWheelFunc(mouseWheel)
 // funcion de inicialización
 initialize();
 
