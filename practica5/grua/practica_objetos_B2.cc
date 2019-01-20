@@ -195,7 +195,7 @@ void draw(void)
 	if(vistas_multiples){
 			cout << "dentro" << endl;
 			//vista perspectiva
-	   glMatrixMode(GL_PROJECTION);
+	   /*glMatrixMode(GL_PROJECTION);
 	   glLoadIdentity();
 	   glFrustum(-Window_width,Window_width,Window_high,
 	             Window_high,Front_plane,Back_plane);
@@ -205,6 +205,18 @@ void draw(void)
 	   glTranslatef(0,0,-Observer_distance);
 	   glRotatef(Observer_angle_x,1,0,0);
 	  glRotatef(Observer_angle_y,0,1,0);
+	  glMatrixMode(GL_MODELVIEW);
+	  glLoadIdentity();
+	  draw_axis();
+	  draw_objects();*/
+
+		//vista alzado
+	  glMatrixMode(GL_PROJECTION);
+	  glLoadIdentity();
+	  glOrtho(-5.0,5.0,-5.0,5.0,-100.0,100.0);
+	  glViewport((GLint) Window_width/2.0,0,(GLint)Window_width/2.0,(GLint)Window_high/2.0);
+	  glRotatef(0,1,0,0);
+	  glScalef(factor,factor,1.0);
 	  glMatrixMode(GL_MODELVIEW);
 	  glLoadIdentity();
 	  draw_axis();
@@ -221,6 +233,29 @@ void draw(void)
 	  glLoadIdentity();
 	  draw_axis();
 	  draw_objects();
+		//vista perfil
+		glMatrixMode(GL_PROJECTION);
+	  glLoadIdentity();
+	  glOrtho(-5.0,5.0,-5.0,5.0,-100.0,100.0);
+	  glViewport((GLint) Window_width/2.0,(GLint)Window_high/2.0,(GLint)Window_width/2.0,(GLint)Window_high/2.0);
+	  glRotatef(90,0,1,0);
+	  glScalef(factor,factor,1.0);
+	  glMatrixMode(GL_MODELVIEW);
+	  glLoadIdentity();
+	  draw_axis();
+	  draw_objects();
+		//desde abajo
+		glMatrixMode(GL_PROJECTION);
+	  glLoadIdentity();
+	  glOrtho(-5.0,5.0,-5.0,5.0,-100.0,100.0);
+	  glViewport((GLint) 0,0,(GLint)Window_width/2.0,(GLint)Window_high/2.0);
+	  glRotatef(270,1,0,0);
+	  glScalef(factor,factor,1.0);
+	  glMatrixMode(GL_MODELVIEW);
+	  glLoadIdentity();
+	  draw_axis();
+	  draw_objects();
+
 		glutSwapBuffers();
 		glFlush();
 		cambioDraw = false;
