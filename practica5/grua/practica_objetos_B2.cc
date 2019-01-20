@@ -14,22 +14,22 @@ using namespace std;
 
 // tipos
 typedef enum{CUBO, PIRAMIDE, OBJETO_PLY, ROTACION, CONO, CILINDRO, ESFERA, ARTICULADO} _tipo_objeto;
-_tipo_objeto t_objeto=CUBO;
-_modo   modo=POINTS;
+_tipo_objeto t_objeto=ARTICULADO;
+_modo   modo=SOLID;
 
 // variables que definen la posicion de la camara en coordenadas polares
 GLfloat Observer_distance;
 GLfloat Observer_angle_x;
 GLfloat Observer_angle_y;
 int estadoRaton[3], xc, yc, cambio=0;
-bool cambioDraw = false;
-
+bool cambioDraw = false, vistas_multiples = false, cambioModo = false;
+//GLfloat Window_width,Window_height;
 // variables que controlan la ventana y la transformacion de perspectiva
 GLfloat Size_x,Size_y,Front_plane,Back_plane;
 
 // variables que determninan la posicion y tamaño de la ventana X
 int Window_x=50,Window_y=50,Window_width=450,Window_high=450;
-
+float factor = 1.0;
 
 // objetos
 _cubo cubo(0.8);
@@ -77,7 +77,7 @@ glFrustum(-Size_x,Size_x,-Size_y,Size_y,Front_plane,Back_plane);
 
 void change_observer()
 {
-cout << "Cambiando observador" << endl;
+glViewport(0,0,Window_width,Window_high);
 // posicion del observador
 glMatrixMode(GL_MODELVIEW);
 glLoadIdentity();
@@ -141,7 +141,7 @@ switch (t_objeto){
 
 void draw_click(void)
 {
-	clean_window();
+	change_projection();
 	change_observer();
 	draw_axis();
 	draw_objects();
@@ -173,11 +173,12 @@ void draw_click(void)
 void draw_sinclick(void)
 {
 
-	clean_window();
+
 	change_observer();
 	draw_axis();
 	draw_objects();
 	glutSwapBuffers();
+	glFlush();
 	/*if(modo == ARTICULADO){
 		cout << "dibujado fondo";
 		glDrawBuffer(GL_BACK);
@@ -190,13 +191,53 @@ void draw_sinclick(void)
 
 void draw(void)
 {
+	clean_window();
+	if(vistas_multiples){
+			cout << "dentro" << endl;
+			//vista perspectiva
+	   glMatrixMode(GL_PROJECTION);
+	   glLoadIdentity();
+	   glFrustum(-Window_width,Window_width,Window_high,
+	             Window_high,Front_plane,Back_plane);
+	   glViewport((GLint) Window_width/2.0,0,(GLint)Window_width/2.0,(GLint)Window_high/2.0);
+	   glMatrixMode(GL_MODELVIEW);
+	   glLoadIdentity();
+	   glTranslatef(0,0,-Observer_distance);
+	   glRotatef(Observer_angle_x,1,0,0);
+	  glRotatef(Observer_angle_y,0,1,0);
+	  glMatrixMode(GL_MODELVIEW);
+	  glLoadIdentity();
+	  draw_axis();
+	  draw_objects();
 
-	if(t_objeto == ARTICULADO){
-		draw_click();
-		cambioDraw = true;
-	}else{
-		draw_sinclick();
+	  //vista alzado
+	  glMatrixMode(GL_PROJECTION);
+	  glLoadIdentity();
+	  glOrtho(-5.0,5.0,-5.0,5.0,-100.0,100.0);
+	  glViewport(0,(GLint)Window_high/2.0,(GLint) Window_width/2.0,(GLint) Window_high/2.0);
+	  glRotatef(90,1,0,0);
+	  glScalef(factor,factor,1.0);
+	  glMatrixMode(GL_MODELVIEW);
+	  glLoadIdentity();
+	  draw_axis();
+	  draw_objects();
+		glutSwapBuffers();
+		glFlush();
 		cambioDraw = false;
+	}else{
+		cout << "fuera multibles" << endl;
+		//if(t_objeto == ARTICULADO){
+			draw_click();
+			cambioDraw = true;
+		/*}else{
+			draw_sinclick();
+			cambioDraw = false;
+		}*/
+
+	}
+	if(cambioModo){
+				glutPostRedisplay();
+				cambioModo = false;
 	}
 }
 
@@ -237,14 +278,19 @@ switch (toupper(Tecla1)){
 	case '2':modo=EDGES;break;
 	case 'S':modo=SOLID;break;
 	case 'A':modo=SOLID_CHESS;break;
-	case '3':t_objeto=CONO;break;
+	/*case '3':t_objeto=CONO;break;
 	case '4':t_objeto=CILINDRO;break;
 	case '5':t_objeto=ESFERA;break;
         case 'P':t_objeto=PIRAMIDE;break;
         case 'C':t_objeto=CUBO;break;
         case 'O':t_objeto=OBJETO_PLY;break;
         case 'R':t_objeto=ROTACION;break;
-				case 'G':t_objeto=ARTICULADO;break;
+				case 'G':t_objeto=ARTICULADO;break;*/
+				case 'M':vistas_multiples = vistas_multiples ? false : true;
+				cambioModo= true;
+				break;
+				case '+':factor*=0.9;break;
+				case '-':factor*=1.1;break;
 	}
 glutPostRedisplay();
 }
@@ -310,7 +356,7 @@ Size_y=0.5;
 Front_plane=1;
 Back_plane=1000;
 // se incia la posicion del observador, en el eje z
-Observer_distance=4*Front_plane;
+Observer_distance=6*Front_plane;
 Observer_angle_x=0;
 Observer_angle_y=0;
 
