@@ -97,6 +97,24 @@ void _triangulos3D::draw_seleccion(int r, int g, int b)
 
 }
 
+void _triangulos3D::draw_seleccion_caras(int r, int g, int b)
+{
+	int i;
+	glPolygonMode(GL_FRONT_AND_BACK,GL_FILL);
+	//glColor3ub(r,g,b);
+
+	glBegin(GL_TRIANGLES);
+	for(i = 0; i < caras.size(); i++){
+		glColor3ub(r+i,g,b);
+		glVertex3fv((GLfloat *) &vertices[caras[i]._0]);
+		glVertex3fv((GLfloat *) &vertices[caras[i]._1]);
+		glVertex3fv((GLfloat *) &vertices[caras[i]._2]);
+	}
+	glEnd();
+
+
+}
+
 //*************************************************************************
 // dibujar en modo sólido con apariencia de ajedrez
 //*************************************************************************
@@ -591,7 +609,15 @@ _grua::_grua():base(1),cabeza_giratoria(), brazo_inferior(0.5,1,10){
 	giro_brazo_superior = 70;
 	rotar_brazo_superior = 0;
 	mover_mano = -90;
+	numeroCaras[4] = numeroCaras[0] = base.caras.size();
+	numeroCaras[1] = cabeza_giratoria.caras.size();
+	numeroCaras[3] = numeroCaras[2] = brazo_inferior.caras.size();
 }
+void _grua::cambiarEstadoCaras(int cara){
+	cout << "_El valor es " << cara;
+	estadoCaras[cara - 100 ]= estadoCaras[cara - 100] ? false : true;
+}
+
 void _grua::cambiarEstado(int pieza){
 	estadoPiezas[pieza]= estadoPiezas[pieza] ? false : true;
 }
@@ -729,3 +755,210 @@ glPushMatrix();
 glPopMatrix();
 
 };
+
+void _grua::draw_seleccion_caras(_modo modo, float grosor)
+{
+int i = 100;
+glPushMatrix();
+	//glTranslatef(-0.5,0,-0.5);
+	glRotatef(girar_suelo,0,0.5,0);
+	glPushMatrix();
+		//x-y-x
+		glScalef(1,0.25,1);
+		base.draw_seleccion_caras(i, 0, 0);
+		cout << i <<":cara 1:"<<base.caras.size() << endl;
+	glPopMatrix();
+
+	//base
+	glPushMatrix();
+		glScalef(0.5,0.25,0.5);
+		glTranslatef(1,2,1);
+		glRotatef(180.0,1,0,0);
+		glRotatef(giro_base * -1,0,1,0);
+		i += numeroCaras[0];
+		cout << i <<":cara 2" <<cabeza_giratoria.caras.size() << endl;
+		cabeza_giratoria.draw_seleccion_caras(i, 0, 0);
+	glPopMatrix();
+
+	glPushMatrix();
+		//brazoInferior
+		glTranslatef(0.5,0.5,0.5);
+		glRotatef(giro_base,0,1,0);
+		glRotatef(giro_brazo_inferior,1,0,0);
+		glPushMatrix();
+			glScalef(0.5,1,0.5);
+			i += numeroCaras[1];
+			cout << i <<":cara 3" << brazo_inferior.caras.size() << endl;
+			brazo_inferior.draw_seleccion_caras(i, 0, 0);
+
+		glPopMatrix();
+
+		//brazosuperior
+		glPushMatrix();
+			glTranslatef(0,1,0);
+			//glRotatef(giro_base,0,1,0);
+			glRotatef(giro_brazo_superior,1,0,0);
+			glRotatef(rotar_brazo_superior,0,1,0);
+			glPushMatrix();
+				glScalef(0.5,1,0.5);
+				i += numeroCaras[2];
+				cout << i <<":cara 4" <<brazo_inferior.caras.size()<< endl;
+				brazo_inferior.draw_seleccion_caras(i, 0, 0);
+			glPopMatrix();
+
+
+			//base de arribamodo, 180,
+			glPushMatrix();
+				glTranslatef(-0.5,1,0);
+				glRotatef(mover_mano,1,0,0);
+				glScalef(1,0.1,0.5);
+				i += numeroCaras[3];
+				cout << i <<":cara 5" << base.caras.size()<<endl;
+				base.draw_seleccion_caras(i, 0, 0);
+			glPopMatrix();
+		glPopMatrix();
+
+
+
+	glPopMatrix();
+glPopMatrix();
+
+};
+
+void _grua::dibujarCaras(_modo modo, float grosor){
+	int j = 0;
+	glPushMatrix();
+		//glTranslatef(-0.5,0,-0.5);
+		glRotatef(girar_suelo,0,0.5,0);
+		glPushMatrix();
+			//x-y-x
+			glScalef(1,0.25,1);
+
+			glPolygonMode(GL_FRONT_AND_BACK,GL_FILL);
+			//glColor3ub(r,g,b);
+
+			glBegin(GL_TRIANGLES);
+			for(int i = 0; i < base.caras.size(); i++){
+				if(estadoCaras[j])
+					glColor3ub(0,120,0);
+				else
+					glColor3ub(120,0,0);
+
+				glVertex3fv((GLfloat *) &base.vertices[base.caras[i]._0]);
+				glVertex3fv((GLfloat *) &base.vertices[base.caras[i]._1]);
+				glVertex3fv((GLfloat *) &base.vertices[base.caras[i]._2]);
+				j++;
+			}
+			glEnd();
+
+		glPopMatrix();
+
+		//base
+		glPushMatrix();
+			glScalef(0.5,0.25,0.5);
+			glTranslatef(1,2,1);
+			glRotatef(180.0,1,0,0);
+			glRotatef(giro_base * -1,0,1,0);
+			glPolygonMode(GL_FRONT_AND_BACK,GL_FILL);
+			//glColor3ub(r,g,b);
+
+			glBegin(GL_TRIANGLES);
+			for(int i = 0; i < cabeza_giratoria.caras.size(); i++){
+				if(estadoCaras[j])
+					glColor3ub(0,120,0);
+				else
+					glColor3ub(120,0,0);
+
+				glVertex3fv((GLfloat *) &cabeza_giratoria.vertices[cabeza_giratoria.caras[i]._0]);
+				glVertex3fv((GLfloat *) &cabeza_giratoria.vertices[cabeza_giratoria.caras[i]._1]);
+				glVertex3fv((GLfloat *) &cabeza_giratoria.vertices[cabeza_giratoria.caras[i]._2]);
+				j++;
+			}
+			glEnd();
+
+
+		glPopMatrix();
+
+		glPushMatrix();
+			//brazoInferior
+			glTranslatef(0.5,0.5,0.5);
+			glRotatef(giro_base,0,1,0);
+			glRotatef(giro_brazo_inferior,1,0,0);
+			glPushMatrix();
+				glScalef(0.5,1,0.5);
+				glPolygonMode(GL_FRONT_AND_BACK,GL_FILL);
+				//glColor3ub(r,g,b);
+
+				glBegin(GL_TRIANGLES);
+				for(int i = 0; i < brazo_inferior.caras.size(); i++){
+					if(estadoCaras[j])
+						glColor3ub(0,120,0);
+					else
+						glColor3ub(120,0,0);
+
+					glVertex3fv((GLfloat *) &brazo_inferior.vertices[brazo_inferior.caras[i]._0]);
+					glVertex3fv((GLfloat *) &brazo_inferior.vertices[brazo_inferior.caras[i]._1]);
+					glVertex3fv((GLfloat *) &brazo_inferior.vertices[brazo_inferior.caras[i]._2]);
+					j++;
+				}
+				glEnd();
+
+			glPopMatrix();
+
+			//brazosuperior
+			glPushMatrix();
+				glTranslatef(0,1,0);
+				//glRotatef(giro_base,0,1,0);
+				glRotatef(giro_brazo_superior,1,0,0);
+				glRotatef(rotar_brazo_superior,0,1,0);
+				glPushMatrix();
+					glScalef(0.5,1,0.5);
+					glPolygonMode(GL_FRONT_AND_BACK,GL_FILL);
+					//glColor3ub(r,g,b);
+
+					glBegin(GL_TRIANGLES);
+					for(int i = 0; i < brazo_inferior.caras.size(); i++){
+						if(estadoCaras[j])
+							glColor3ub(0,120,0);
+						else
+							glColor3ub(120,0,0);
+
+						glVertex3fv((GLfloat *) &brazo_inferior.vertices[brazo_inferior.caras[i]._0]);
+						glVertex3fv((GLfloat *) &brazo_inferior.vertices[brazo_inferior.caras[i]._1]);
+						glVertex3fv((GLfloat *) &brazo_inferior.vertices[brazo_inferior.caras[i]._2]);
+						j++;
+					}
+					glEnd();
+				glPopMatrix();
+
+
+				//base de arriba
+				glPushMatrix();
+					glTranslatef(-0.5,1,0);
+					glRotatef(mover_mano,1,0,0);
+					glScalef(1,0.1,0.5);
+					glPolygonMode(GL_FRONT_AND_BACK,GL_FILL);
+					//glColor3ub(r,g,b);
+
+					glBegin(GL_TRIANGLES);
+					for(int i = 0; i < base.caras.size(); i++){
+						if(estadoCaras[j])
+							glColor3ub(0,120,0);
+						else
+							glColor3ub(120,0,0);
+
+						glVertex3fv((GLfloat *) &base.vertices[base.caras[i]._0]);
+						glVertex3fv((GLfloat *) &base.vertices[base.caras[i]._1]);
+						glVertex3fv((GLfloat *) &base.vertices[base.caras[i]._2]);
+						j++;
+					}
+					glEnd();
+				glPopMatrix();
+			glPopMatrix();
+
+
+
+		glPopMatrix();
+	glPopMatrix();
+
+}

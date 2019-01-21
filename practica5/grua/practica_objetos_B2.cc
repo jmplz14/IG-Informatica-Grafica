@@ -23,6 +23,7 @@ GLfloat Observer_angle_x;
 GLfloat Observer_angle_y;
 int estadoRaton[3], xc, yc, cambio=0;
 bool cambioDraw = false, vistas_multiples = false, cambioModo = false;
+bool dibujar_caras = false;
 //GLfloat Window_width,Window_height;
 // variables que controlan la ventana y la transformacion de perspectiva
 GLfloat Size_x,Size_y,Front_plane,Back_plane;
@@ -57,7 +58,7 @@ glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
 
 
 //**************************************************************************
-// Funcion para definir la transformación de proyeccion
+// Funcion para defiteclanir la transformación de proyeccion
 //***************************************************************************
 
 void change_projection()
@@ -129,7 +130,12 @@ switch (t_objeto){
 	case PIRAMIDE: piramide.draw(modo,1.0,0.0,0.0,0.0,1.0,0.0,2);break;
         case OBJETO_PLY: ply.draw(modo,1.0,0.6,0.0,0.0,1.0,0.3,2);break;
         case ROTACION: rotacion.draw(modo,1.0,0.0,0.0,0.0,1.0,0.0,2);break;
-				case ARTICULADO: grua.draw(modo,1.0,0.0,0.0,0.0,1.0,0.0,2);break;
+				case ARTICULADO:
+				if(!dibujar_caras)
+					grua.draw(modo,1.0,0.0,0.0,0.0,1.0,0.0,2);
+				else
+					grua.dibujarCaras(modo,2);
+				break;
 	}
 
 }
@@ -141,21 +147,39 @@ switch (t_objeto){
 
 void draw_click(void)
 {
-	change_projection();
-	change_observer();
-	draw_axis();
-	draw_objects();
-	if(!cambioDraw)
-		glutSwapBuffers();
+	if(!dibujar_caras){
+		change_projection();
+		change_observer();
+		draw_axis();
+		draw_objects();
+		if(!cambioDraw)
+			glutSwapBuffers();
 
-	glDrawBuffer(GL_BACK);
-	clean_window();
-	change_observer();
+		glDrawBuffer(GL_BACK);
+		clean_window();
+		change_observer();
 		grua.draw_seleccion(modo,2);
-		glDrawBuffer(GL_FRONT);
+			//grua.dibujarCaras(modo,2);
+			glDrawBuffer(GL_FRONT);
 
-	glFlush();
+		glFlush();
+	}else{
+		change_projection();
+		change_observer();
+		draw_axis();
+		draw_objects();
+		if(!cambioDraw)
+			glutSwapBuffers();
 
+		glDrawBuffer(GL_BACK);
+		clean_window();
+		change_observer();
+
+			grua.draw_seleccion_caras(modo,2);
+			glDrawBuffer(GL_FRONT);
+
+		glFlush();
+	}
 	/*clean_window();
 	change_observer();
 	draw_axis();
@@ -202,7 +226,7 @@ void draw(void)
 	   glViewport((GLint) Window_width/2.0,0,(GLint)Window_width/2.0,(GLint)Window_high/2.0);
 	   glMatrixMode(GL_MODELVIEW);
 	   glLoadIdentity();
-	   glTranslatef(0,0,-Observer_distance);
+	   glTranslatef(0,0,5);
 	   glRotatef(Observer_angle_x,1,0,0);
 	  glRotatef(Observer_angle_y,0,1,0);
 	  glMatrixMode(GL_MODELVIEW);
@@ -254,7 +278,7 @@ void draw(void)
 	  glMatrixMode(GL_MODELVIEW);
 	  glLoadIdentity();
 	  draw_axis();
-	  draw_objects();
+draw_objects();
 
 		glutSwapBuffers();
 		glFlush();
@@ -312,7 +336,7 @@ switch (toupper(Tecla1)){
 	case '1':modo=POINTS;break;
 	case '2':modo=EDGES;break;
 	case 'S':modo=SOLID;break;
-	case 'A':modo=SOLID_CHESS;break;
+	//case 'A':modo=SOLID_CHESS;break;
 	/*case '3':t_objeto=CONO;break;
 	case '4':t_objeto=CILINDRO;break;
 	case '5':t_objeto=ESFERA;break;
@@ -322,7 +346,12 @@ switch (toupper(Tecla1)){
         case 'R':t_objeto=ROTACION;break;
 				case 'G':t_objeto=ARTICULADO;break;*/
 				case 'M':vistas_multiples = vistas_multiples ? false : true;
-				cambioModo= true;
+				cambioModo= true;break;
+				case 'C':
+				if(!vistas_multiples){
+					dibujar_caras = dibujar_caras ? false : true;
+					cambioModo= true;
+				}
 				break;
 				case '+':factor*=0.9;break;
 				case '-':factor*=1.1;break;
@@ -412,17 +441,20 @@ void procesar_color(unsigned char color[3])
  int obj;
  bool encontrado = false;
 
-
- switch (color[0])
-      {case 100: obj=0;encontrado = true;break;
-        case 120: obj=1;encontrado = true;break;
-        case 140: obj=2;encontrado = true;break;
-        case 160: obj=3;encontrado = true;break;
-        case 180: obj=4;encontrado = true;;break;}
-				if(encontrado){
-					grua.cambiarEstado(obj);
-					//grua.draw(modo,1.0,0.0,0.0,0.0,1.0,0.0,2);
-				}
+	if(!dibujar_caras){
+	 switch (color[0])
+	      {case 100: obj=0;encontrado = true;break;
+	        case 120: obj=1;encontrado = true;break;
+	        case 140: obj=2;encontrado = true;break;
+	        case 160: obj=3;encontrado = true;break;
+	        case 180: obj=4;encontrado = true;;break;}
+					if(encontrado){
+						grua.cambiarEstado(obj);
+						//grua.draw(modo,1.0,0.0,0.0,0.0,1.0,0.0,2);
+					}
+	}else{
+		grua.cambiarEstadoCaras(color[0]);
+	}
 
 
  }

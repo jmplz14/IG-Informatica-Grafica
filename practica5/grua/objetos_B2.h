@@ -39,6 +39,7 @@ void 	draw_aristas(float r, float g, float b, int grosor);
 void  draw_solido(float r, float g, float b);
 void 	draw_solido_ajedrez(float r1, float g1, float b1, float r2, float g2, float b2);
 void  draw_seleccion(int r, int g, int b);
+void  draw_seleccion_caras(int r, int g, int b);
 void 	draw(_modo modo, float r1, float g1, float btecla1, float r2, float g2, float b2, float grosor);
 
 vector<_vertex3i> caras;
@@ -140,9 +141,14 @@ public:
 	_cubo brazo_superior;
 	_grua();
 	bool estadoPiezas[5];
+	int numeroCaras[5];
+	bool estadoCaras[124];
 	void 	draw(_modo modo, float r1, float g1, float b1, float r2, float g2, float b2, float grosor);
-		void 	draw_seleccion(_modo modo, float grosor);
+	void 	draw_seleccion(_modo modo, float grosor);
+	void 	draw_seleccion_caras(_modo modo, float grosor);
 	void cambiarEstado(int pieza);
+	void cambiarEstadoCaras(int cara);
+	void dibujarCaras(_modo modo, float grosor);
 	float giro_base;
 	float giro_brazo_inferior;
 	float giro_brazo_superior;
