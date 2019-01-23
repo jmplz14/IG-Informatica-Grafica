@@ -1,0 +1,3 @@
+m: Se utilza la tecla m para desactivar y activar la vision de las distintas vista.
+c: Cambia el tipo de seleccion de objetos a caras o al contrario.
+

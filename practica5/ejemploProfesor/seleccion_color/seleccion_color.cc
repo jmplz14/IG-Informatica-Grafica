@@ -109,36 +109,36 @@ void draw_objects()
 {
   glPushMatrix();
      glTranslatef(0.0,-0.4,0.0);
-     glPushMatrix(); 
+     glPushMatrix();
      glTranslatef(0.0,0.8,0.0);
      draw_solido(piramide1,0.1,0.1,0.1,1);
      draw_solido(piramide1,piramide1->r,piramide1->g,piramide1->b,2);
-     glPopMatrix();         
+     glPopMatrix();
 
-     glPushMatrix(); 
+     glPushMatrix();
      glTranslatef(-0.5,0.0,0.5);
      draw_solido(piramide2,0.2,0.2,0.4,1);
      draw_solido(piramide2,piramide2->r,piramide2->g,piramide2->b,2);
-     glPopMatrix(); 
-     
-     glPushMatrix(); 
+     glPopMatrix();
+
+     glPushMatrix();
      glTranslatef(0.5,0.0,0.5);
      draw_solido(piramide3,0.2,0.2,0.7,1);
      draw_solido(piramide3,piramide3->r,piramide3->g,piramide3->b,2);
      glPopMatrix();
 
-     glPushMatrix(); 
+     glPushMatrix();
      glTranslatef(-0.5,0.0,-0.5);
      draw_solido(piramide4,0.2,0.2,1.0,1);
      draw_solido(piramide4,piramide4->r,piramide4->g,piramide4->b,2);
-     glPopMatrix(); 
+     glPopMatrix();
 
-     glPushMatrix(); 
+     glPushMatrix();
      glTranslatef(0.5,0.0,-0.5);
      draw_solido(piramide5,1.0,0.2,0.0,1);
      draw_solido(piramide5,piramide5->r,piramide5->g,piramide5->b,2);
-     glPopMatrix(); 
-   glPopMatrix();   
+     glPopMatrix();
+   glPopMatrix();
 }
 
 //**************************************************************************
@@ -149,36 +149,36 @@ void draw_objects()
 void draw_objects_seleccion()
 {
 int inc=20;
-   glPushMatrix();    
+   glPushMatrix();
      glTranslatef(0.0,-0.4,0.0);
-     glPushMatrix(); 
+     glPushMatrix();
      glTranslatef(0.0,0.8,0.0);
      draw_seleccion_color(piramide1,100,100,100);
-     glPopMatrix();         
+     glPopMatrix();
 
-     glPushMatrix(); 
+     glPushMatrix();
      glTranslatef(-0.5,0.0,0.5);
      draw_seleccion_color(piramide2,100+inc,100+inc,100+inc);
-     glPopMatrix(); 
+     glPopMatrix();
      inc+=20;
-     
-     glPushMatrix(); 
+
+     glPushMatrix();
      glTranslatef(0.5,0.0,0.5);
      draw_seleccion_color(piramide3,100+inc,100+inc,100+inc);
      glPopMatrix();
-     inc+=20;  
-
-     glPushMatrix(); 
-     glTranslatef(-0.5,0.0,-0.5);
-     draw_seleccion_color(piramide4,100+inc,100+inc,100+inc);
-     glPopMatrix(); 
      inc+=20;
 
-     glPushMatrix(); 
+     glPushMatrix();
+     glTranslatef(-0.5,0.0,-0.5);
+     draw_seleccion_color(piramide4,100+inc,100+inc,100+inc);
+     glPopMatrix();
+     inc+=20;
+
+     glPushMatrix();
      glTranslatef(0.5,0.0,-0.5);
      draw_seleccion_color(piramide5,100+inc,100+inc,100+inc);
-     glPopMatrix(); 
-   glPopMatrix();   
+     glPopMatrix();
+   glPopMatrix();
 }
 
 
@@ -235,10 +235,10 @@ void normal_keys(unsigned char Tecla1,int x,int y)
 {
 
 if (toupper(Tecla1)=='Q') exit(0);
-if (Tecla1=='+') 
+if (Tecla1=='+')
    {factor*=0.9;
     glutPostRedisplay();}
-if (Tecla1=='-') 
+if (Tecla1=='-')
    {factor*=1.1;
     glutPostRedisplay();}
 }
@@ -279,7 +279,7 @@ if(boton== GLUT_RIGHT_BUTTON) {
       estadoRaton[2] = 1;
       xc=x;
       yc=y;
-     } 
+     }
    else estadoRaton[2] = 1;
    }
 if(boton== GLUT_LEFT_BUTTON) {
@@ -288,7 +288,7 @@ if(boton== GLUT_LEFT_BUTTON) {
       xc=x;
       yc=y;
       pick_color(xc, yc);
-    } 
+    }
   }
 }
 
@@ -314,8 +314,8 @@ Observer_angle_y=y;
 
 void RatonMovido( int x, int y )
 {
-float x0, y0, xn, yn; 
-if(estadoRaton[2]==1) 
+float x0, y0, xn, yn;
+if(estadoRaton[2]==1)
     {getCamara(&x0,&y0);
      yn=y0+(y-yc);
      xn=x0-(x-xc);
@@ -338,61 +338,61 @@ void procesar_color(unsigned char color[3])
  solido *obj;
 
  obj=(solido *)malloc(sizeof(solido));
- 
+
  switch (color[0])
       {case 100: obj=piramide1;
-                 if (modo[0]==0) 
+                 if (modo[0]==0)
                       {modo[0]=1;
                        cambio=1;
                       }
-                  else 
+                  else
                       {modo[0]=0;
                        cambio=0;
                       }
-                  break; 
+                  break;
         case 120: obj=piramide2;
-                  if (modo[1]==0) 
+                  if (modo[1]==0)
                        {modo[1]=1;
                         cambio=1;
                        }
-                  else 
+                  else
                        {modo[1]=0;
                         cambio=0;
-                       } 
+                       }
                   break;
         case 140: obj=piramide3;
-                  if (modo[2]==0) 
+                  if (modo[2]==0)
                        {modo[2]=1;
                         cambio=1;
                        }
-                  else 
+                  else
                        {modo[2]=0;
                         cambio=0;
                        }
-                  break; 
+                  break;
         case 160: obj=piramide4;
-                  if (modo[3]==0) 
+                  if (modo[3]==0)
                        {modo[3]=1;
                         cambio=1;
                        }
-                  else 
+                  else
                        {modo[3]=0;
                         cambio=0;
                        }
                   break;
         case 180: obj=piramide5;
-                  if (modo[4]==0) 
+                  if (modo[4]==0)
                        {modo[4]=1;
                         cambio=1;
                        }
-                  else 
+                  else
                        {modo[4]=0;
                         cambio=0;
                        }
                   break;
-                }         
-               
-        if (cambio==1) 
+                }
+
+        if (cambio==1)
                   {obj->r=0.3;
                    obj->g=0.9;
                    obj->b=0.3;
@@ -402,7 +402,7 @@ void procesar_color(unsigned char color[3])
                    obj->g=0.6;
                    obj->b=0.2;
                   }
-                 
+
  }
 
 
@@ -462,22 +462,22 @@ for (int i=0;i<5;i++) modo[i]=0;
 int main(int argc, char **argv)
 {
     // se llama a la inicialización de glut
-    
+
     piramide1=(solido*)malloc(sizeof(solido));
     construir_piramide(0.5,0.8,piramide1);
-    
+
     piramide2=(solido*)malloc(sizeof(solido));
     construir_piramide(0.5,0.8,piramide2);
-    
+
     piramide3=(solido*)malloc(sizeof(solido));
     construir_piramide(0.5,0.8,piramide3);
-    
+
     piramide4=(solido*)malloc(sizeof(solido));
     construir_piramide(0.5,0.8,piramide4);
-    
+
     piramide5=(solido*)malloc(sizeof(solido));
     construir_piramide(0.5,0.8,piramide5);
-    
+
     glutInit(&argc, argv);
 
     // se indica las caracteristicas que se desean para la visualización con OpenGL

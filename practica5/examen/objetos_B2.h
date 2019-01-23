@@ -6,9 +6,7 @@
 #include <GL/gl.h>
 #include "vertex.h"
 #include <stdlib.h>
-#include "file_ply_stl.hpp"
 
-using namespace std;
 
 const float AXIS_SIZE=5000;
 typedef enum{POINTS,EDGES,SOLID_CHESS,SOLID} _modo;
@@ -38,9 +36,11 @@ public:
 
 	_triangulos3D();
 void 	draw_aristas(float r, float g, float b, int grosor);
-void    draw_solido(float r, float g, float b);
+void  draw_solido(float r, float g, float b);
 void 	draw_solido_ajedrez(float r1, float g1, float b1, float r2, float g2, float b2);
-void 	draw(_modo modo, float r1, float g1, float b1, float r2, float g2, float b2, float grosor);
+void  draw_seleccion(int r, int g, int b);
+void  draw_seleccion_caras(int r, int g, int b);
+void 	draw(_modo modo, float r1, float g1, float btecla1, float r2, float g2, float b2, float grosor);
 
 vector<_vertex3i> caras;
 };
@@ -56,7 +56,43 @@ public:
 
 	_cubo(float tam=0.5);
 };
+//*************************************************************************
+// clase cono
+//*************************************************************************
+class _cilindro: public _triangulos3D
+{
+private:
+  void parametros(vector<_vertex3f> perfil1, int num1);
+public:
 
+	_cilindro(float radio=0.5, float al=1,int lados = 10);
+};
+
+//*************************************************************************
+// clase cono
+//*************************************************************************
+
+class _cono: public _triangulos3D
+{
+private:
+  void parametros(vector<_vertex3f> perfil1, int num1);
+public:
+
+	_cono(float radio=0.5, float al=1,int lados = 10);
+};
+
+//*************************************************************************
+// clase esfera
+//*************************************************************************
+
+class _esfera: public _triangulos3D
+{
+private:
+  void parametros(vector<_vertex3f> perfil1, int num1);
+public:
+
+	_esfera(float radio=0.5, int puntos=40,int lados = 20);
+};
 
 //*************************************************************************
 // clase piramide
@@ -89,74 +125,35 @@ class _rotacion: public _triangulos3D
 {
 public:
        _rotacion();
-void  parametros(vector<_vertex3f> perfil1, int num1, int tapas);
+void  parametros(vector<_vertex3f> perfil1, int num1);
 
 vector<_vertex3f> perfil;
 int num;
 };
 
-
-//************************************************************************
-// objeto articulado: tanque
-//************************************************************************
-
-class _chasis: public _triangulos3D
+class _grua: public _triangulos3D
 {
+
 public:
-       _chasis();
-void 	draw(_modo modo, float r1, float g1, float b1, float r2, float g2, float b2, float grosor);
-
-float altura;
-
-protected:
-_rotacion  rodamiento;
-_cubo  base;
-};
-
-//************************************************************************
-
-class _torreta: public _triangulos3D
-{
-public:
-       _torreta();
-void 	draw(_modo modo, float r1, float g1, float b1, float r2, float g2, float b2, float grosor);
-
-float altura;
-float anchura;
-
-protected:
-_cubo  base;
-_piramide parte_trasera;
-};
-
-//************************************************************************
-
-class _tubo: public _triangulos3D
-{
-public:
-       _tubo();
-void 	draw(_modo modo, float r1, float g1, float b1, float r2, float g2, float b2, float grosor);
-
-protected:
-_rotacion tubo_abierto; // caña del cañón
-};
-
-//************************************************************************
-
-class _tanque: public _triangulos3D
-{
-public:
-       _tanque();
-void 	draw(_modo modo, float r1, float g1, float b1, float r2, float g2, float b2, float grosor);
-
-float giro_tubo;
-float giro_torreta;
-
-float giro_tubo_min;
-float giro_tubo_max;
-
-protected:
-_chasis  chasis;
-_torreta  torreta;
-_tubo     tubo;
+	_cubo base;
+	_cono cabeza_giratoria;
+	_cilindro brazo_inferior;
+	_cubo brazo_superior;
+	_grua();
+	bool estadoPiezas[5];
+	int numeroCaras[5];
+	bool estadoCaras[124];
+	void 	draw(_modo modo, float r1, float g1, float b1, float r2, float g2, float b2, float grosor);
+	void 	draw_seleccion(_modo modo, float grosor);
+	void 	draw_seleccion_caras(_modo modo, float grosor);
+	void cambiarEstado(int pieza);
+	void cambiarEstadoCaras(int cara);
+	void cambiarTodas(int cara);
+	void dibujarCaras(_modo modo, float grosor);
+	float giro_base;
+	float giro_brazo_inferior;
+	float giro_brazo_superior;
+	float rotar_brazo_superior;
+	float mover_mano;
+	float girar_suelo;
 };
